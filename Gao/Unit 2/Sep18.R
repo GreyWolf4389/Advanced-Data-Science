@@ -54,3 +54,14 @@ unique(swchars$Gender)
 swchars %>% filter(!(Sex == "female" & Gender == "female") & !(Sex == "male" & Gender == "masculine")) %>% select(Name, Sex, Gender)
 
 swchars <- swchars %>% select(-Sex)
+
+table(swchars$EyeColor)
+
+apply(X = swchars, MARGIN = 2, FUN = unique) %>% lapply(FUN = length) %>% str()
+
+swchars <- swchars %>% mutate(Gender = factor(Gender), Species = factor(Species))
+swchars
+
+summary(swchars)
+
+ggplot(swchars, aes(x=Species, y=Height, color=Species)) + geom_boxplot()
