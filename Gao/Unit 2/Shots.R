@@ -23,3 +23,5 @@ for (row in rows) {
 names(shots) <- column_names
 
 shots <- as_tibble(shots)
+
+ggplot(shots, aes(x=LOC_X, y=LOC_Y)) + geom_point()
