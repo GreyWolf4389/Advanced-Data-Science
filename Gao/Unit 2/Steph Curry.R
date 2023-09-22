@@ -357,5 +357,5 @@ ggplot(shots %>% filter(Season =="2009-2010")) + geom_density2d(aes(x = LocX,y =
 
 # Plot Shot Density for All Seasons
 
-ggplot(shots %>% filter(Season =="2009-2010")) + geom_density2d(aes(x = LocX,y = LocY), bins=40,alpha=0.9) + labs(title="2009-2010 Season", x="",y="") + theme(plot.title=element_text(hjust=0.5)) +facet_wrap(facets=vars(EventType)) + theme(axis.ticks=element_blank(),axis.text=element_blank()) +draw_court()
+ggplot(shots) + geom_density2d(aes(x = LocX,y = LocY), bins=40,alpha=0.9) + labs(title="All Shots 2009-2019", x="",y="") + theme(plot.title=element_text(hjust=0.5)) +facet_wrap(facets=vars(EventType)) + theme(axis.ticks=element_blank(),axis.text=element_blank()) +draw_court()
 
