@@ -361,8 +361,11 @@ ggplot(shots) + geom_density2d(aes(x = LocX,y = LocY), bins=40,alpha=0.9) + labs
 
 # Plot Shot Density for Two Seasons
 
-seasons <- c("2009-10","2015-2016")
-ggplot(filter(shots, Season %in% seasons & LocY < 475), aes(x=LocX, y=LocY,color=EventType)) + geom_point() + labs(title="Shot Location by Season",x="",y="") +theme(plot.title=element_text(hjust=0.5)) +facet_wrap(facets=vars(EventType)) + theme(axis.ticks=element_blank(),axis.text=element_blank()) + draw_court()
+seasons <- c("2009-2010", "2015-2016")
+ggplot(filter(shots, Season %in% seasons & LocY < 475),aes(x = LocX, y = LocY)) +geom_point() +labs(title = "Shot Density by Season", x = "", y = "",color = "") +theme(plot.title = element_text(hjust = 0.5)) +facet_wrap(facets = vars(Season)) +theme(axis.ticks = element_blank(), axis.text = element_blank()) +draw_court()
 
+# Plot Shot Density for the same Two Seasons
+
+ggplot(filter(shots, Season %in% seasons)) +geom_density_2d(aes(x = LocX, y = LocY), bins=40,alpha=0.9) +labs(title = "Shot Density by Season", x = "", y = "",color = "") +theme(plot.title = element_text(hjust = 0.5)) +facet_wrap(facets = vars(Season)) +draw_court()
 
 
