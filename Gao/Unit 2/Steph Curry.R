@@ -18,6 +18,7 @@ library("ggforce")
 # Set Your Working Directory. Use the data directory that
 # we have been using this semester.
 
+setwd("..")
 setwd("Documents/murach_r/data")
 getwd()
 
@@ -30,7 +31,7 @@ download.file(url, dest_file)
 
 # Read the JSON file
 
-json_data <- fromJSON("../../data/shots.json")
+json_data <- fromJSON("shots.json")
 
 # Build the tibble
 
