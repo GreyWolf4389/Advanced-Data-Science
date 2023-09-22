@@ -350,7 +350,6 @@ ggplot(shots, aes(x = Zone, fill = Zone)) +
 
 
 
-
   
 
 
