@@ -302,7 +302,7 @@ draw_court <- function() {
     
     geom_arc(aes(x0 = 0, y0 = 0, r = 238, 
                  start = -1.18, end = 1.18),
-             data = dummy_data, inherit.aes = FALSE),
+             data = dummy_data, inherit.aes = FALSE)
   )
   return(court)
 }
@@ -344,17 +344,18 @@ ggplot(shots, aes(x = Zone, fill = Zone)) +
   theme(plot.title = element_text(hjust = 0.5),
         axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none")
+# Plot shooting percentage by zone
 
+shots_zone <- shots %>% group_by(Zone) %>% summarize(Made = sum(ShotMadeFlag), Attempted = n()) %>% mutate(Percent = (Made / Attempted )) %>% arrange(desc(Percent))
+shots_zone
 
+ggplot(shots_zone, aes(x=Zone, y=Percent, fill=Zone)) + geom_col() + labs(x="", title="Percent Shots Made By Zone") + theme(plot.title = element_text(hjust=0.5),axis.text.x=element_text(angle=45,hjust=1),legend.position="none")
 
+# Plot Shot Density
 
+ggplot(shots %>% filter(Season =="2009-2010")) + geom_density2d(aes(x = LocX,y = LocY), bins=40,alpha=0.9) + labs(title="2009-2010 Season", x="",y="") + theme(plot.title=element_text(hjust=0.5)) +facet_wrap(facets=vars(EventType)) + theme(axis.ticks=element_blank(),axis.text=element_blank()) +draw_court()
 
+# Plot Shot Density for All Seasons
 
-  
-
-
-
-
-
-
+ggplot(shots %>% filter(Season =="2009-2010")) + geom_density2d(aes(x = LocX,y = LocY), bins=40,alpha=0.9) + labs(title="2009-2010 Season", x="",y="") + theme(plot.title=element_text(hjust=0.5)) +facet_wrap(facets=vars(EventType)) + theme(axis.ticks=element_blank(),axis.text=element_blank()) +draw_court()
 
