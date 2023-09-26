@@ -22,3 +22,7 @@ diamonds
 #Make box plot
 
 ggplot(diamonds, aes(x=X,y=Price,fill=Cut)) + geom_boxplot()
+
+ggplot(diamonds, aes(x=X,y=Price,fill=Clarity)) + geom_boxplot()
+
+ggplot(diamonds, aes(x=X,y=Price,fill=Color)) + geom_boxplot()
