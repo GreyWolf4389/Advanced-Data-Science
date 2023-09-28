@@ -4,6 +4,11 @@ install.packages("gridExtra")
 install.packages("reshape2")
 Avocado <- read_csv("Avocado.csv")
 
+library(tidyverse)
+
+getwd()
+setwd("Avocados")
+
 Avocado <- as_tibble(Avocado)
 
 colnames(Avocado)[2] = "Weight_0"
@@ -22,6 +27,9 @@ colnames(Avocado)[13] = "Density_3"
 colnames(Avocado)[14] = "Weight_4"
 colnames(Avocado)[15] = "Volume_4"
 colnames(Avocado)[16] = "Density_4"
+colnames(Avocado)[17] = "Weight_5"
+colnames(Avocado)[18] = "Volume_5"
+colnames(Avocado)[19] = "Density_5"
 
 
 
@@ -42,7 +50,7 @@ ggplot(avocado_long, aes(x = as.numeric(Day) + 1, y = Density, group = Avocado_n
   geom_line() +   
   labs(x = "Day", y = "Density", title = "Density Trend for 30 Avocados with Connecting Lines") +
   theme_minimal() +
-  scale_x_continuous(breaks = 1:5, labels = paste("Day", 1:5)) +
+  scale_x_continuous(breaks = 0:6, labels = paste("Day", 0:6)) +
   coord_cartesian(ylim = NULL)
 
 
@@ -51,11 +59,14 @@ ggplot(avocado_long, aes(x = as.numeric(Day) + 1, y = Density, group = Avocado_n
 #Linear regression for density vs days
 
 
+avocado_long <- avocado_long %>%
+  mutate(Day = as.numeric(Day))
+
 predicted_data <- avocado_long %>%
   group_by(Avocado_number) %>%
   do({
     model <- lm(Density ~ Day, data = .)
-    next_days <- data.frame(Day = seq(max(.$Day) + 1, max(.$Day) + 7, by = 1))
+    next_days <- data.frame(Day = seq(max(.$Day) + 1, max(.$Day) + 14, by = 1))
     predicted_density <- predict(model, newdata = next_days)
     data.frame(next_days, predicted_density)
   }) %>%
@@ -67,7 +78,7 @@ ggplot(avocado_long, aes(x = Day, y = Density, group = Avocado_number, color = a
   geom_point(data = predicted_data, aes(x = Day, y = predicted_density), color = "red", size = 3) +  # Predicted data points
   labs(x = "Day", y = "Density", title = "Density Trend for Avocados with Linear Regression") +
   theme_minimal() +
-  scale_x_continuous(breaks = seq(1, max(avocado_long$Day) + 7, 1), labels = paste("Day", seq(1, max(avocado_long$Day) + 7, 1))) +
+  scale_x_continuous(breaks = seq(1, max(avocado_long$Day) + 14, 1), labels = paste("Day", seq(1, max(avocado_long$Day) + 14, 1))) +
   coord_cartesian(ylim = NULL)
 
 
@@ -96,7 +107,7 @@ ggplot(avocado_weight, aes(x = as.numeric(Day) + 1, y = Weight, group = Avocado_
   geom_line() +   
   labs(x = "Day", y = "Weight", title = "Weight Trend for 30 Avocados with Connecting Lines") +
   theme_minimal() +
-  scale_x_continuous(breaks = 1:5, labels = paste("Day", 1:5)) +
+  scale_x_continuous(breaks = 0:6, labels = paste("Day", 0:6)) +
   coord_cartesian(ylim = NULL)
 
 
