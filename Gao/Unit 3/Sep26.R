@@ -12,7 +12,7 @@ diamonds
 
 #check for NA values
 
-apply(X=diamonds,MARGIN=2,FUN=function(col),sum(is.na(col)))
+apply(X=diamonds,MARGIN=2,FUN=function(col) sum(is.na(col)))
 
 #Drop rows that have invalid values
 
