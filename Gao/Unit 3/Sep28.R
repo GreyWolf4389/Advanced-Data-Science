@@ -15,3 +15,11 @@ r_vals <- r_vals %>% rowwise() %>%
          H_StrongNeg = -X + sample(-25:25, 1, replace = TRUE),
          I_PerfectNeg = -X)
 
+r_vals_long <- r_vals %>%
+  pivot_longer(cols = names(select(r_vals, -1)),
+               names_to = "Variable",
+               values_to = "Value")
+
+ggplot(data = r_vals_long) + 
+  geom_point(aes(x = X, y = Value)) + 
+  facet_wrap(facets = vars(Variable), scales = "free")
