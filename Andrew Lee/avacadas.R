@@ -1,13 +1,6 @@
 install.packages("tidyverse")
-library(gridExtra)
-install.packages("gridExtra")
-install.packages("reshape2")
 Avocado <- read_csv("Avocado.csv")
 
-library(tidyverse)
-
-getwd()
-setwd("Avocados")
 
 Avocado <- as_tibble(Avocado)
 
@@ -33,7 +26,6 @@ colnames(Avocado)[19] = "Density_5"
 
 
 
-
 #Graph for density vs days, no regression
 
 avocado_long <- Avocado %>%
@@ -42,15 +34,15 @@ avocado_long <- Avocado %>%
                names_sep = "_") 
 
 
-y_breaks <- seq(1, max(avocado_long$Density), by = 0.5)
+y_breaks <- seq(1, max(avocado_long_filtered$Density), by = 0.5)
 y_labels <- y_breaks
 
-ggplot(avocado_long, aes(x = as.numeric(Day) + 1, y = Density, group = Avocado_number, color = as.factor(Avocado_number))) +
+ggplot(avocado_long_filtered, aes(x = as.numeric(Day), y = Density, group = Avocado_number, color = as.factor(Avocado_number))) +
   geom_point() + 
   geom_line() +   
   labs(x = "Day", y = "Density", title = "Density Trend for 30 Avocados with Connecting Lines") +
   theme_minimal() +
-  scale_x_continuous(breaks = 0:6, labels = paste("Day", 0:6)) +
+  scale_x_continuous(breaks = 1:5, labels = paste("Day", 1:5)) +
   coord_cartesian(ylim = NULL)
 
 
@@ -62,11 +54,12 @@ ggplot(avocado_long, aes(x = as.numeric(Day) + 1, y = Density, group = Avocado_n
 avocado_long <- avocado_long %>%
   mutate(Day = as.numeric(Day))
 
+
 predicted_data <- avocado_long %>%
   group_by(Avocado_number) %>%
   do({
     model <- lm(Density ~ Day, data = .)
-    next_days <- data.frame(Day = seq(max(.$Day) + 1, max(.$Day) + 14, by = 1))
+    next_days <- data.frame(Day = seq(max(.$Day), max(.$Day) + 7, by = 1))
     predicted_density <- predict(model, newdata = next_days)
     data.frame(next_days, predicted_density)
   }) %>%
@@ -78,7 +71,7 @@ ggplot(avocado_long, aes(x = Day, y = Density, group = Avocado_number, color = a
   geom_point(data = predicted_data, aes(x = Day, y = predicted_density), color = "red", size = 3) +  # Predicted data points
   labs(x = "Day", y = "Density", title = "Density Trend for Avocados with Linear Regression") +
   theme_minimal() +
-  scale_x_continuous(breaks = seq(1, max(avocado_long$Day) + 14, 1), labels = paste("Day", seq(1, max(avocado_long$Day) + 14, 1))) +
+  scale_x_continuous(breaks = seq(1, max(avocado_long$Day) + 8, 1), labels = paste("Day", seq(1, max(avocado_long$Day) + 8, 1))) +
   coord_cartesian(ylim = NULL)
 
 
@@ -102,12 +95,12 @@ avocado_weight <- Avocado %>%
 y_breaks <- seq(1, max(avocado_weight$Weight), by = 0.5)
 y_labels <- y_breaks
 
-ggplot(avocado_weight, aes(x = as.numeric(Day) + 1, y = Weight, group = Avocado_number, color = as.factor(Avocado_number))) +
+ggplot(avocado_weight, aes(x = as.numeric(Day), y = Weight, group = Avocado_number, color = as.factor(Avocado_number))) +
   geom_point() + 
   geom_line() +   
   labs(x = "Day", y = "Weight", title = "Weight Trend for 30 Avocados with Connecting Lines") +
   theme_minimal() +
-  scale_x_continuous(breaks = 0:6, labels = paste("Day", 0:6)) +
+  scale_x_continuous(breaks = 1:5, labels = paste("Day", 1:5)) +
   coord_cartesian(ylim = NULL)
 
 
@@ -125,7 +118,7 @@ predicted_data <- avocado_weight %>%
   group_by(Avocado_number) %>%
   do({
     model <- lm(Weight ~ Day, data = .)
-    next_days <- data.frame(Day = seq(max(.$Day) + 1, max(.$Day) + 7, by = 1))
+    next_days <- data.frame(Day = seq(max(.$Day), max(.$Day) + 10, by = 1))
     predicted_weight <- predict(model, newdata = next_days)
     data.frame(next_days, predicted_weight)
   }) %>%
@@ -137,7 +130,7 @@ ggplot(avocado_weight, aes(x = Day, y = Weight, group = Avocado_number, color = 
   geom_point(data = predicted_data, aes(x = Day, y = predicted_weight), color = "red", size = 3) +  # Predicted data points
   labs(x = "Day", y = "Weight", title = "Weight Trend for Avocados with Linear Regression") +
   theme_minimal() +
-  scale_x_continuous(breaks = seq(1, max(avocado_weight$Day) + 7, 1), labels = paste("Day", seq(1, max(avocado_weight$Day) + 7, 1))) +
+  scale_x_continuous(breaks = seq(1, max(avocado_weight$Day) + 10, 1), labels = paste("Day", seq(1, max(avocado_weight$Day) + 10, 1))) +
   coord_cartesian(ylim = NULL)
 
 
@@ -164,4 +157,68 @@ for (i in unique(avocado_weight$Avocado_number)) {
 
 r_squared_data <- data.frame(Avocado_number = unique(avocado_weight$Avocado_number), R_squared = r_squared_values)
 print(r_squared_data)
+
+
+
+
+####################################
+
+
+#R  values for data Weight vs Days
+
+
+
+r_squared_values <- numeric(length(unique(avocado_weight$Avocado_number)))
+
+# Loop through each avocado
+for (i in unique(avocado_weight$Avocado_number)) {
+  avocado_data <- avocado_weight %>% filter(Avocado_number == i)
+  
+  model <- lm(Weight ~ as.numeric(Day), data = avocado_data)
+  
+  r_squared <- summary(model)$r.squared
+  
+  r_value <- sqrt(r_squared)
+  
+  r_squared_values[i] <- r_value
+}
+
+r_data <- data.frame(Avocado_number = unique(avocado_weight$Avocado_number), r_value = r_squared_values)
+
+print(r_data)
+
+
+
+
+
+
+
+
+
+###############
+
+#Average change in weight 
+
+average_change_per_avocado <- avocado_weight %>%
+  group_by(Avocado_number) %>%
+  summarise(average_change = (last(Weight) - first(Weight)) / (last(Day) - first(Day)))
+
+overall_average_change <- mean(average_change_per_avocado$average_change)
+
+print(overall_average_change)
+
+
+#Average change in density
+
+average_change_per_avocado <- avocado_long %>%
+  group_by(Avocado_number) %>%
+  summarise(average_change = (last(Density) - first(Density)) / (last(Day) - first(Day)))
+
+overall_average_change <- mean(average_change_per_avocado$average_change)
+
+print(overall_average_change)
+
+
+#############
+average_r_change <- mean(overall_average_change$Avocado_number)
 
