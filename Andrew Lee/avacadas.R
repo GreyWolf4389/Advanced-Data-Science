@@ -1,5 +1,6 @@
 install.packages("tidyverse")
 Avocado <- read_csv("Avocado.csv")
+install.packages("plotly")
 
 
 Avocado <- as_tibble(Avocado)
@@ -34,16 +35,19 @@ avocado_long <- Avocado %>%
                names_sep = "_") 
 
 
-y_breaks <- seq(1, max(avocado_long_filtered$Density), by = 0.5)
+
+y_breaks <- seq(1, max(avocado_long$Density), by = 0.5)
 y_labels <- y_breaks
 
-ggplot(avocado_long_filtered, aes(x = as.numeric(Day), y = Density, group = Avocado_number, color = as.factor(Avocado_number))) +
+lmao <- ggplot(avocado_long, aes(x = as.numeric(Day), y = Density, group = Avocado_number, color = as.factor(Avocado_number))) +
   geom_point() + 
   geom_line() +   
   labs(x = "Day", y = "Density", title = "Density Trend for 30 Avocados with Connecting Lines") +
   theme_minimal() +
-  scale_x_continuous(breaks = 1:5, labels = paste("Day", 1:5)) +
+  scale_x_continuous(breaks = c(0, 1:5), labels = paste("Day", c(0, 1:5))) +
   coord_cartesian(ylim = NULL)
+
+print(lmao)
 
 
 
@@ -95,14 +99,15 @@ avocado_weight <- Avocado %>%
 y_breaks <- seq(1, max(avocado_weight$Weight), by = 0.5)
 y_labels <- y_breaks
 
-ggplot(avocado_weight, aes(x = as.numeric(Day), y = Weight, group = Avocado_number, color = as.factor(Avocado_number))) +
+lol <- ggplot(avocado_weight, aes(x = as.numeric(Day), y = Weight, group = Avocado_number, color = as.factor(Avocado_number))) +
   geom_point() + 
   geom_line() +   
   labs(x = "Day", y = "Weight", title = "Weight Trend for 30 Avocados with Connecting Lines") +
   theme_minimal() +
-  scale_x_continuous(breaks = 1:5, labels = paste("Day", 1:5)) +
+  scale_x_continuous(breaks = c(0, 1:5), labels = paste("Day", c(0, 1:5))) +
   coord_cartesian(ylim = NULL)
 
+print(lol)
 
 
 
