@@ -197,55 +197,40 @@ cat("Average R-squared value:", average_r_squared, "\n")
 ####################################
 
 
-#R  values for data Weight vs Days must run r^2 values for weight first
+#R  values for data Weight vs Days 
 
-
-
-r_squared_values <- numeric(length(unique(avocado_weight$Avocado_number)))
+r_values <- numeric(length(unique(avocado_weight$Avocado_number)))
 
 # Loop through each avocado
 for (i in unique(avocado_weight$Avocado_number)) {
   avocado_data <- avocado_weight %>% filter(Avocado_number == i)
   
-  model <- lm(Weight ~ as.numeric(Day), data = avocado_data)
+  r_value <- cor(avocado_data$Day, avocado_data$Weight)
   
-  r_squared <- summary(model)$r.squared
-  
-  r_value <- sqrt(r_squared)
-  
-  r_squared_values[i] <- r_value
+  r_values[i] <- r_value
 }
 
-r_data <- data.frame(Avocado_number = unique(avocado_weight$Avocado_number), r_value = r_squared_values)
+r_data <- data.frame(Avocado_number = unique(avocado_weight$Avocado_number), r_value = r_values)
 
 print(r_data)
 
-#R  values for data density vs Days must run r^2 values for density first
 
+#R  values for data density vs Days 
 
-
-r_squared_values <- numeric(length(unique(avocado_long$Avocado_number)))
+r_values <- numeric(length(unique(avocado_long$Avocado_number)))
 
 # Loop through each avocado
 for (i in unique(avocado_long$Avocado_number)) {
   avocado_data <- avocado_long %>% filter(Avocado_number == i)
   
-  model <- lm(Density ~ as.numeric(Day), data = avocado_data)
+  r_value <- cor(avocado_data$Day, avocado_data$Density)
   
-  r_squared <- summary(model)$r.squared
-  
-  r_value <- sqrt(r_squared)
-  
-  r_squared_values[i] <- r_value
+  r_values[i] <- r_value
 }
 
-r_data <- data.frame(Avocado_number = unique(avocado_long$Avocado_number), r_value = r_squared_values)
+r_data <- data.frame(Avocado_number = unique(avocado_long$Avocado_number), r_value = r_values)
 
 print(r_data)
-
-
-
-
 
 
 
