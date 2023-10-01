@@ -2,6 +2,9 @@ install.packages("tidyverse")
 Avocado <- read_csv("Avocado.csv")
 install.packages("plotly")
 
+library("tidyverse")
+library("plotly")
+
 
 Avocado <- as_tibble(Avocado)
 
@@ -144,6 +147,27 @@ ggplot(avocado_weight, aes(x = Day, y = Weight, group = Avocado_number, color = 
 
 ####################################
 
+#R squared values for data Density vs Days (must run separately from weight)
+
+
+r_squared_values <- numeric(length(unique(avocado_long$Avocado_number)))
+
+# Loop through each avocado
+for (i in unique(avocado_long$Avocado_number)) {
+  avocado_data <- avocado_long %>% filter(Avocado_number == i)
+  
+  model <- lm(Density ~ as.numeric(Day), data = avocado_data)
+  
+  r_squared_values[i] <- summary(model)$r.squared
+}
+
+r_squared_data <- data.frame(Avocado_number = unique(avocado_long$Avocado_number), R_squared = r_squared_values)
+print(r_squared_data)
+
+
+average_r_squared <- mean(r_squared_values, na.rm = TRUE)
+
+cat("Average R-squared value:", average_r_squared, "\n")
 
 #R squared values for data Weight vs Days
 
@@ -163,6 +187,10 @@ for (i in unique(avocado_weight$Avocado_number)) {
 r_squared_data <- data.frame(Avocado_number = unique(avocado_weight$Avocado_number), R_squared = r_squared_values)
 print(r_squared_data)
 
+
+average_r_squared <- mean(r_squared_values, na.rm = TRUE)
+
+cat("Average R-squared value:", average_r_squared, "\n")
 
 
 
@@ -204,9 +232,13 @@ print(r_data)
 
 #Average change in weight 
 
+
+avocado_weight <- avocado_weight %>%
+  mutate(Day = as.numeric(Day))
+
 average_change_per_avocado <- avocado_weight %>%
   group_by(Avocado_number) %>%
-  summarise(average_change = (last(Weight) - first(Weight)) / (last(Day) - first(Day)))
+  summarize(average_change = (last(Weight) - first(Weight)) / (last(Day) - first(Day)))
 
 overall_average_change <- mean(average_change_per_avocado$average_change)
 
@@ -214,6 +246,11 @@ print(overall_average_change)
 
 
 #Average change in density
+
+
+avocado_long <- avocado_long %>%
+  mutate(Day = as.numeric(Day))
+
 
 average_change_per_avocado <- avocado_long %>%
   group_by(Avocado_number) %>%
@@ -226,4 +263,20 @@ print(overall_average_change)
 
 #############
 average_r_change <- mean(overall_average_change$Avocado_number)
+
+
+
+
+
+
+
+
+
+
+
+
+
+plotly_gg <-ggplotly(lmao)
+
+htmlwidgets::saveWidget(plotly_gg, "plotly_plot.html")
 
