@@ -1,5 +1,5 @@
 install.packages("tidyverse")
-Avocado <- read_csv("Avocado.csv")
+Avocado <- read_csv("AvocadoData - Sheet1.csv")
 install.packages("plotly")
 
 library("tidyverse")
@@ -221,6 +221,8 @@ for(r_val in r_data_W$r_value) {
 avg_r_weight_val = cumulative_val_weight/30
 avg_r_weight_val
 
+avg_r_weight_val1 <- mean(r_data_W$r_value, na.rm = TRUE)
+print(avg_r_weight_val1)
 
 print(r_data)
 
@@ -249,8 +251,10 @@ for(r_val in r_data_D$r_value) {
 avg_r_density_val = cumulative_val/30
 avg_r_density_val
 
-print(r_data)
+avg_r_density_val1 <- mean(r_data_D$r_value, na.rm = TRUE)
+print(avg_r_density_val1)
 
+print(r_data)
 
 
 
