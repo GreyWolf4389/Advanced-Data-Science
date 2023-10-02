@@ -301,6 +301,9 @@ avocado_long_V <- Avocado %>%
 y_breaks <- seq(1, max(avocado_long_V$Volume), by = 0.5)
 y_labels <- y_breaks
 
+avocado_long_V <- avocado_long_V %>%
+  mutate(Day = as.numeric(Day))
+
 nice <- ggplot(avocado_long_V, aes(x = as.numeric(Day), y = Volume, group = Avocado_number, color = as.factor(Avocado_number))) +
   geom_point() + 
   geom_line() +   
@@ -310,6 +313,32 @@ nice <- ggplot(avocado_long_V, aes(x = as.numeric(Day), y = Volume, group = Avoc
   coord_cartesian(ylim = NULL)
 
 print(nice)
+
+
+#R  values for data Weight vs Days 
+
+r_values <- numeric(length(unique(avocado_long_V$Avocado_number)))
+
+# Loop through each avocado
+for (i in unique(avocado_long_V$Avocado_number)) {
+  avocado_data <- avocado_long_V %>% filter(Avocado_number == i)
+  
+  r_value <- cor(avocado_long_V$Day, avocado_long_V$Volume)
+  
+  r_values[i] <- r_value
+}
+
+r_data_V <- data.frame(Avocado_number = unique(avocado_data$Avocado_number), r_value = r_values)
+
+#Average R value for weight
+
+cumulative_val_vol = 0
+for(r_val in r_data_V$r_value) {
+  cumulative_val_vol = cumulative_val_vol + r_val
+}
+avg_r_vol_val = cumulative_val_vol/30
+avg_r_vol_val
+
 
 plotly_gg <-ggplotly(lmao)
 
