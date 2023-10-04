@@ -64,6 +64,18 @@ get_lower_fence <- function(x) {
   quantile(x, 0.25) - (1.5 * IQR(x))
 }
 
+train <- train %>% filter_at(vars(Carat, Depth, Table, X, Y, Z),
+                             all_vars(. > get_lower_fence(.) &
+                                        . < get_upper_fence(.)))
+
+train
+
+ggplot(data = train, aes(x = Z, y = Price)) + geom_point()
+
+train <- train %>% filter(!Z < 2.25)
+
+ggplot(data = train, aes(x = Z, y = Price)) + geom_point()
+
 
 
 
