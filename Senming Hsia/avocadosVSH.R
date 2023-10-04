@@ -1,5 +1,5 @@
 install.packages("tidyverse")
-Avocado <- read_csv("Avocado.csv")
+Avocado <- read_csv("AvocadoData - Sheet1.csv")
 install.packages("plotly")
 
 library("tidyverse")
@@ -210,7 +210,19 @@ for (i in unique(avocado_weight$Avocado_number)) {
   r_values[i] <- r_value
 }
 
-r_data <- data.frame(Avocado_number = unique(avocado_weight$Avocado_number), r_value = r_values)
+r_data_W <- data.frame(Avocado_number = unique(avocado_weight$Avocado_number), r_value = r_values)
+
+#Average R value for weight
+
+cumulative_val_weight = 0
+for(r_val in r_data_W$r_value) {
+  cumulative_val_weight = cumulative_val_weight + r_val
+}
+avg_r_weight_val = cumulative_val_weight/30
+avg_r_weight_val
+
+avg_r_weight_val1 <- mean(r_data_W$r_value, na.rm = TRUE)
+print(avg_r_weight_val1)
 
 print(r_data)
 
@@ -228,10 +240,21 @@ for (i in unique(avocado_long$Avocado_number)) {
   r_values[i] <- r_value
 }
 
-r_data <- data.frame(Avocado_number = unique(avocado_long$Avocado_number), r_value = r_values)
+r_data_D <- data.frame(Avocado_number = unique(avocado_long$Avocado_number), r_value = r_values)
+
+#Average R value for density
+
+cumulative_val = 0
+for(r_val in r_data_D$r_value) {
+  cumulative_val = cumulative_val + r_val
+}
+avg_r_density_val = cumulative_val/30
+avg_r_density_val
+
+avg_r_density_val1 <- mean(r_data_D$r_value, na.rm = TRUE)
+print(avg_r_density_val1)
 
 print(r_data)
-
 
 
 
@@ -272,18 +295,55 @@ print(overall_average_change)
 average_r_change <- mean(overall_average_change$Avocado_number)
 
 
+#Volume plot
+
+avocado_long_V <- Avocado %>%
+  pivot_longer(cols = starts_with("Volume_"), 
+               names_to = c(".value", "Day"),
+               names_sep = "_") 
+
+y_breaks <- seq(1, max(avocado_long_V$Volume), by = 0.5)
+y_labels <- y_breaks
+
+avocado_long_V <- avocado_long_V %>%
+  mutate(Day = as.numeric(Day))
+
+nice <- ggplot(avocado_long_V, aes(x = as.numeric(Day), y = Volume, group = Avocado_number, color = as.factor(Avocado_number))) +
+  geom_point() + 
+  geom_line() +   
+  labs(x = "Day", y = "Volume", title = "Volume Trend for 30 Avocados with Connecting Lines") +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(0, 1:5), labels = paste("Day", c(0, 1:5))) +
+  coord_cartesian(ylim = NULL)
+
+print(nice)
 
 
+#R  values for data Weight vs Days 
 
+r_values <- numeric(length(unique(avocado_long_V$Avocado_number)))
 
+# Loop through each avocado
+for (i in unique(avocado_long_V$Avocado_number)) {
+  avocado_data <- avocado_long_V %>% filter(Avocado_number == i)
+  
+  r_value <- cor(avocado_long_V$Day, avocado_long_V$Volume)
+  
+  r_values[i] <- r_value
+}
 
+r_data_V <- data.frame(Avocado_number = unique(avocado_data$Avocado_number), r_value = r_values)
 
+#Average R value for weight
 
-
-
+cumulative_val_vol = 0
+for(r_val in r_data_V$r_value) {
+  cumulative_val_vol = cumulative_val_vol + r_val
+}
+avg_r_vol_val = cumulative_val_vol/30
+avg_r_vol_val
 
 
 plotly_gg <-ggplotly(lmao)
 
 htmlwidgets::saveWidget(plotly_gg, "plotly_plot.html")
-
