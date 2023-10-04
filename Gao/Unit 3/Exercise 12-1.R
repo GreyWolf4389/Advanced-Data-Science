@@ -81,17 +81,28 @@ ggplot(temp, aes(x=Price, y=Buildingarea)) + geom_point()
 
 # Part III: Create a Model
 
-# Create a linear regression model wehre the Price variable
+# Create a linear regression model where the Price variable
 # is a function of the BuildingArea variable
 
+linear_reg()
 
-
-# Use the odel to make predictions for the price in the
+# Use the model to make predictions for the price in the
 # testing data set and add those predictions to the
 # testing data set
 
+model <- fit(object = linear_reg(), formula = Price ~ Buildingarea, 
+             data = train)
+predict(model, new_data = test)
+
 # Display a scatter plot that shows the actual and predicted
 # values in the testing data set
+
+model_results <- test %>% 
+  mutate(predict(model, new_data = test))
+
+ggplot(data = model_results) + 
+  geom_point(aes(x = Price, y = Price)) + 
+  geom_point(aes(x = Price, y = .pred), color = "blue")
 
 # Part IV: Plot Equations and Formulas
 
