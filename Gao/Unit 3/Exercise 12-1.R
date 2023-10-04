@@ -68,6 +68,10 @@ train <- train %>%
   filter_at(vars(Price, Buildingarea), 
             all_vars(. > get_lower_fence(.) &
                        . < get_upper_fence(.)))
+test <- test %>% 
+  filter_at(vars(Price, Buildingarea), 
+            all_vars(. > get_lower_fence(.) &
+                       . < get_upper_fence(.)))
 
 # Drop any other rows that contain additional outliers
 # such as rows where the BuildingArea is very low but the
@@ -75,9 +79,10 @@ train <- train %>%
 
 ggplot(train, aes(x=Price, y=Buildingarea)) + geom_point()
 
-temp <- train %>% filter(Buildingarea > Price * (1/20000))
+train <- train %>% filter(Buildingarea > Price * (1/20000) & Price < Buildingarea * 100000)
+test <- test %>% filter(Buildingarea > Price * (1/20000) & Price < Buildingarea * 100000)
 
-ggplot(temp, aes(x=Price, y=Buildingarea)) + geom_point()
+ggplot(train, aes(y=Price, x=Buildingarea)) + geom_point()
 
 # Part III: Create a Model
 
@@ -101,20 +106,33 @@ model_results <- test %>%
   mutate(predict(model, new_data = test))
 
 ggplot(data = model_results) + 
-  geom_point(aes(x = Price, y = Price)) + 
-  geom_point(aes(x = Price, y = .pred), color = "blue")
+  geom_point(aes(x = Buildingarea, y = Price)) + 
+  geom_point(aes(x = Buildingarea, y = .pred), color = "blue")
 
 # Part IV: Plot Equations and Formulas
 
 # Display the intercept and coefficient for the equation
 # that's used by the model
 
+model
+#intercept = 340408
+#slope = 4619
+
 # Use the geom_function() function to plot the equation
 # that's used by the model over a scatter plot of the
 # test data set
 
+ggplot(data = test) + 
+  geom_point(aes(x = Buildingarea, y = Price)) +
+  geom_function(fun = function(x) 4619 * x + 340408, 
+                color="red", linewidth = 2)
+
 # Use the geom_smooth() function plot the formula that's
 # used by the model over a scatter plot of the test data set
 
+ggplot(data = test, aes(x = Buildingarea, y = Price)) + 
+  geom_point() +
+  geom_smooth(method = lm, formula = y ~ x, 
+              color="red", linewidth = 2)
 
 
