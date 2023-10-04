@@ -73,10 +73,18 @@ train <- train %>%
 # such as rows where the BuildingArea is very low but the
 # Price is high.
 
+ggplot(train, aes(x=Price, y=Buildingarea)) + geom_point()
+
+temp <- train %>% filter(Buildingarea > Price * (1/20000))
+
+ggplot(temp, aes(x=Price, y=Buildingarea)) + geom_point()
+
 # Part III: Create a Model
 
 # Create a linear regression model wehre the Price variable
 # is a function of the BuildingArea variable
+
+
 
 # Use the odel to make predictions for the price in the
 # testing data set and add those predictions to the
