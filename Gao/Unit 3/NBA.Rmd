@@ -2,27 +2,23 @@
 title: "NBA"
 author: "Gao"
 date: "2023-10-09"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Import libraries
 
 ```{r cars}
 library(tidyverse)
 library(tidymodels)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
+Import the data
 
 ```{r pressure, echo=FALSE}
 getwd()
@@ -30,4 +26,54 @@ getwd()
 NBA <- read_csv("NBA.csv") %>% as_tibble()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Create a plot
+
+```{r}
+ggplot(NBA) + geom_point(aes(x = GP, y = PTS))
+```
+
+Create a linear regression model
+
+```{r}
+model <- lm(PTS ~ GP, data = NBA)
+model
+```
+
+points-hat = 2.253 + 0.153(GP)
+
+Interpretation of the slope:
+
+For each additional game played for an NBA player, we expect that his average points per game to increase by 0.153 points. 
+
+Interpretation of the y-intercept
+
+When a player doesn't play any games, he will have an average point per game of 2.2528. This has no practical interpretations.
+
+```{r}
+cor(NBA$GP, NBA$PTS)
+```
+
+r = 0.544
+
+There is a moderately strong positive linear correlation between games played by an NBA player and average points per game.
+
+```{r}
+(cor(NBA$GP, NBA$PTS))^2
+```
+
+r^2 = 0.2955
+
+Approximately 29.55% of the variability in the mean points per game can be explained by this lienar model containing games played and mean points per game.
+
+```{r}
+summary(model)
+```
+
+New plot containing 
+
+```{r}
+ggplot(NBA) + geom_point(aes(x = GP, y = resid(model)))
+```
+
+Interpret residual plot
+

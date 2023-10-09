@@ -2,7 +2,7 @@ library(ggplot2)
 library(ggforce)
 library(progress)
 
-num_points <- 1000000
+num_points <- 500000
 
 estimate_pi <- function(num_points) {
   inside_circle <- 0
