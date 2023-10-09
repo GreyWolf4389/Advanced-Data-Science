@@ -1,0 +1,131 @@
+---
+title: "Exercise 12-1"
+author: "Gao"
+date: "2023-10-06"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+First, we must install our libraries
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+```
+
+Set working directory
+
+```{r}
+getwd()
+```
+
+Retrieve the .csv file
+
+```{r}
+housing <- read_csv("melbourne_housing.csv")
+
+names(housing) <- names(housing) %>% str_to_title()
+```
+
+Examine for missing values
+
+```{r}
+apply(X = housing, MARGIN = 2, FUN = function(col) 
+  sum(is.na(col)))
+```
+
+Drop all rows with missing values
+
+```{r}
+housing <- na.omit(housing)
+```
+
+Return correlation 
+
+```{r}
+cor(x = housing$Price, y = housing$Buildingarea)
+cor(x = housing$Price, y = housing$Rooms)
+cor(x = housing$Price, y = housing$Car)
+cor(x = housing$Price, y = housing$Landsize)
+```
+
+Display a scatter pot that shows the relationshiop between the Price and BuildingArea variables
+
+```{r}
+ggplot(housing, aes(x=Price, y=Buildingarea)) + geom_point()
+```
+
+Split the data
+
+```{r}
+housing_split <- initial_split(housing, prop = 0.75)
+train <- training(housing_split)
+test <- testing(housing_split)
+```
+
+Create functions to delete outliers
+
+```{r}
+get_upper_fence <- function(x) {
+  quantile(x, 0.75) + (1.5 * IQR(x))
+}
+
+get_lower_fence <- function(x) {
+  quantile(x, 0.25) - (1.5 * IQR(x))
+}
+```
+
+Use the fences to delete outliers
+
+```{r}
+
+train <- train %>% 
+  filter_at(vars(Price, Buildingarea), 
+            all_vars(. > get_lower_fence(.) &
+                       . < get_upper_fence(.)))
+test <- test %>% 
+  filter_at(vars(Price, Buildingarea), 
+            all_vars(. > get_lower_fence(.) &
+                       . < get_upper_fence(.)))
+```
+
+Delete any really weird numbers
+
+```{r}
+train <- train %>% filter(Buildingarea > Price * (1/20000) & Price < Buildingarea * 100000)
+test <- test %>% filter(Buildingarea > Price * (1/20000) & Price < Buildingarea * 100000)
+
+ggplot(train, aes(y=Price, x=Buildingarea)) + geom_point()
+```
+
+Create a linear regression model using the training set
+
+```{r}
+linear_reg()
+
+
+model <- fit(object = linear_reg(), formula = Price ~ Buildingarea, 
+             data = train)
+predict(model, new_data = test)
+```
+
+Use the testing set
+
+```{r}
+model_results <- test %>% 
+  mutate(predict(model, new_data = test))
+```
+
+Plot the plot
+
+```{r}
+ggplot(data = model_results) + 
+  geom_point(aes(x = Buildingarea, y = Price)) + 
+  geom_point(aes(x = Buildingarea, y = .pred), color = "blue")
+```
+
