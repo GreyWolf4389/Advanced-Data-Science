@@ -1,0 +1,74 @@
+---
+title: "Rafting"
+author: "Gao"
+date: "2023-10-11"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Import libraries
+
+```{r cars}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(yardstick)
+```
+
+Import the data
+
+```{r pressure, echo=FALSE}
+getwd()
+
+rafting <- read_csv("Rafting.CSV") %>% as_tibble()
+```
+Create a plot
+
+```{r}
+ggplot(data = rafting) + geom_point(aes(x = sqrt(Distance), y = Velocity))
+```
+
+Create a linear regression model
+
+```{r}
+model <- lm(Velocity ~ Distance, data = rafting)
+model
+
+summary(model)
+```
+
+```{r}
+rafting$sqrtDistance <- rafting$Distance^0.5
+
+model2 <- lm(Velocity ~ sqrtDistance, data = rafting)
+model2
+
+summary(model2)
+```
+
+```{r}
+rafting$Velocity2 <- rafting$Velocity^2
+
+model3 <- lm(Velocity2 ~ Distance, data = rafting)
+model3
+
+summary(model3)
+```
+
+```{r}
+ggplot(rafting) + geom_point(aes(x=predict(model), y=resid(model)))
+```
+
+```{r}
+ggplot(rafting) + geom_point(aes(x=predict(model2), y=resid(model2)))
+```
+
+```{r}
+ggplot(rafting) + geom_point(aes(x=predict(model3), y=resid(model3)))
+```
+

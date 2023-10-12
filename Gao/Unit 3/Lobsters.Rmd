@@ -1,0 +1,62 @@
+---
+title: "Lobster"
+author: "Gao"
+date: "2023-10-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Import libraries
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(yardstick)
+```
+
+Import Lobsters data
+
+```{r}
+lobsters <- read_csv("Lobsters.csv") %>% as_tibble()
+```
+
+Create a plot
+
+```{r}
+ggplot(data = lobsters) + geom_point(aes(x = Age, y = Length))
+```
+
+Create a linear regression model
+
+```{r}
+model <- lm(Length ~ Age, data = lobsters)
+model
+
+summary(model)
+```
+
+```{r}
+lobsters$sqrtLength <- lobsters$Length^0.5
+
+model2 <- lm(sqrtLength ~ Age, data = lobsters)
+model2
+
+summary(model2)
+```
+
+```{r}
+lobsters$Length2 <- lobsters$Length^2
+
+model3 <- lm(Length2 ~ Age, data = lobsters)
+model3
+
+summary(model3)
+```
+
+```{r}
+ggplot(lobsters) + geom_point(aes(x=predict(model3), y=resid(model3)))
+```

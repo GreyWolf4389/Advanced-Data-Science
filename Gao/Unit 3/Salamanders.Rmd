@@ -1,0 +1,85 @@
+---
+title: "Salamanders"
+author: "Gao"
+date: "2023-10-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Import libraries
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(yardstick)
+```
+
+Import Salamanders data
+
+```{r}
+salamanders <- read_csv("Salamanders.csv") %>% as_tibble()
+```
+
+Create a plot
+
+```{r}
+ggplot(data = salamanders) + geom_point(aes(x = RockDensity, y = SalamanderDensity))
+```
+
+Create a linear regression model
+
+```{r}
+model <- lm(SalamanderDensity ~ RockDensity, data = salamanders)
+model
+
+summary(model)
+```
+
+```{r}
+salamanders$sqrtSalamanderDensity <- salamanders$SalamanderDensity^0.5
+
+model2 <- lm(sqrtSalamanderDensity ~ RockDensity, data = salamanders)
+model2
+
+summary(model2)
+```
+
+```{r}
+salamanders$SalamanderDensity2 <- salamanders$SalamanderDensity^2
+
+model3 <- lm(SalamanderDensity2 ~ RockDensity, data = salamanders)
+model3
+
+summary(model3)
+```
+
+```{r}
+salamanders$reSalamanderDensity <- 1/salamanders$SalamanderDensity
+
+model4 <- lm(reSalamanderDensity ~ RockDensity, data = salamanders)
+model4
+
+summary(model4)
+```
+
+Model 1 is the most accurate, as it has the lowest r^2 value
+
+```{r}
+ggplot(salamanders) + geom_point(aes(x=predict(model), y=resid(model)))
+```
+
+```{r}
+ggplot(salamanders) + geom_point(aes(x=predict(model2), y=resid(model2)))
+```
+
+```{r}
+ggplot(salamanders) + geom_point(aes(x=predict(model3), y=resid(model3)))
+```
+
+```{r}
+ggplot(salamanders) + geom_point(aes(x=predict(model4), y=resid(model4)))
+```

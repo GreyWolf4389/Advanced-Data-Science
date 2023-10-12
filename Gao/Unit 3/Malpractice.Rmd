@@ -1,0 +1,78 @@
+---
+title: "Medical Malpractice"
+author: "Gao"
+date: "2023-10-09"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Import libraries
+
+```{r cars}
+library(tidyverse)
+library(tidymodels)
+```
+
+Import the data
+
+```{r pressure, echo=FALSE}
+getwd()
+
+malpractice <- read_csv("malpractice.csv") %>% as_tibble()
+```
+
+Create a plot
+
+```{r}
+ggplot(malpractice) + geom_point(aes(x = Severity, y = Amount))
+```
+
+Create a linear regression model
+
+```{r}
+model <- lm(Amount ~ Severity, data = malpractice)
+model
+```
+
+points-hat = 7471 + 31255(GP)
+
+Interpretation of the slope:
+
+For each additional point increase in severity, we expect that the malpractice claim amount increases by 31255 dollars. 
+
+Interpretation of the y-intercept
+
+When a case has a severity of 0, the expected payout is 7471 dollars. This has no practical interpretations.
+
+```{r}
+cor(malpractice$Severity, malpractice$Amount)
+```
+
+r = 0.3371629
+
+There is a moderately strong positive linear correlation between games played by an NBA player and average points per game.
+
+```{r}
+(cor(malpractice$Severity, malpractice$Amount))^2
+```
+
+r^2 = 0.1136788
+
+Approximately 11.37% of the variability in the mean points per game can be explained by this lienar model containing games played and mean points per game.
+
+```{r}
+summary(model)
+```
+
+New plot containing 
+
+```{r}
+ggplot(malpractice) + geom_point(aes(x = Severity, y = resid(model)))
+```
+
+
