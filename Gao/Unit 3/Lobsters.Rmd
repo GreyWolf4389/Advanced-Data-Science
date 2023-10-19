@@ -2,7 +2,9 @@
 title: "Lobster"
 author: "Gao"
 date: "2023-10-12"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -55,6 +57,14 @@ model3 <- lm(Length2 ~ Age, data = lobsters)
 model3
 
 summary(model3)
+```
+
+```{r}
+ggplot(lobsters) + geom_point(aes(x=predict(model), y=resid(model)))
+```
+
+```{r}
+ggplot(lobsters) + geom_point(aes(x=predict(model2), y=resid(model2)))
 ```
 
 ```{r}
