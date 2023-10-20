@@ -1,0 +1,56 @@
+---
+title: "NBA 2022-2023"
+author: "Andrew Lee"
+date: "2023-10-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+library("tidymodels")
+library("ggforce")
+library("ggplot2")
+
+
+```
+
+```{r}
+NBA <- read_csv("NBA.csv") %>%
+  as_tibble()
+```
+
+
+```{r}
+select_if(NBA, is.numeric) %>%
+  cor() %>%
+  round(3)
+```
+
+```{r}
+ggplot(NBA) +
+  geom_point(aes(x = HEIGHT, y = PTS)) + 
+  facet_wrap(~TEAM, scales = "free")
+```
+
+```{r}
+ggplot(NBA) +
+  geom_point(aes(x = HEIGHT, y = WEIGHT)) + 
+  facet_wrap(~TEAM, scales = "free")
+```
+
+```{r}
+ggplot(NBA) +
+  geom_point(aes(x = GP, y = W)) + 
+  facet_wrap(~TEAM, scales = "free")
+```
+```{r}
+
+ggplot(NBA) +
+  geom_point(aes(x = AST, y = FGM)) + 
+  facet_wrap(~TEAM, scales = "free")
+```
+
