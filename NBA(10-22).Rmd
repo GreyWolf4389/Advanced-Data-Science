@@ -1,0 +1,116 @@
+---
+title: "NBA22"
+author: "Lucas"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+library("tidymodels")
+library("ggforce")
+library(ggplot2)
+library("moments")
+library("car")
+```
+
+```{r}
+setwd("/Users/lucasqu/Documents/murach_r/data")
+NBA <- read.csv("NBA22.csv")
+NBA <- as_tibble(NBA)
+
+```
+
+```{r}
+select_if(NBA, is.numeric) %>% cor() %>% round(3)
+```
+
+```{r}
+model <- lm(PTS ~ HEIGHT + MIN + FGM + FTM + PF, data = NBA)
+
+model_db
+model %>% tidy()
+
+summary(model)
+```
+
+```{r}
+ggplot(data = NBA, aes(x = FTM, y = PTS)) + geom_point()
+```
+
+```{r}
+ggplot(data = NBA, aes(x = FGA, y = FGM)) + geom_point()
+```
+
+```{r}
+ggplot(data = NBA, aes(x = X3PA, y = PTS)) + geom_point()
+```
+
+```{r}
+ggplot(data = NBA, aes(x = TOV, y = FGM)) + geom_point()
+```
+
+```{r}
+plot(fitted(model), resid(model))
+```
+```{r}
+qqnorm(resid(model))
+```
+
+```{r}
+seom <- sqrt(deviance(model)/
+               df.residual(model))
+
+seom
+```
+
+```{r}
+plot(fitted(model), resid(model))
+
+abline(h = 2*seom, col = "red")
+abline(h = -2*seom, col = "red")
+```
+
+```{r}
+residuals <- resid(model)
+
+residuals
+```
+
+
+```{r}
+sort(residuals)
+```
+```{r}
+h <- 2*(5+1)/539
+
+h
+```
+
+Calculation of leverage values
+
+```{r}
+sort(hatvalues(model))
+```
+
+Outliers by leverage is 36, while outliers by 2s rule is 29. Some may be in there, some won't
+
+
+Define critical value for jackknife residual, outliers by jackknife exceed t critical value with degrees of freedom n-k-2 in absolute value
+```{r}
+t <- qt(df = 539 - 5 - 2, 0.95)
+
+t
+```
+
+Calculate jackknife residuals
+
+```{r}
+sort(jackknife <- rstudent(model))
+```
+
+
