@@ -1,0 +1,181 @@
+---
+title: "Roller Coaster"
+author: "Andrew Lee"
+date: "2023-10-30"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library("tidyverse")
+library("tidymodels")
+library("ggforce")
+library("ggplot2")
+library("moments")
+library("car")
+library("mctest")
+library("olsrr")
+```
+
+```{r}
+Roller <- read_csv("Roller Coasters.csv") %>%
+  as_tibble()
+```
+
+```{r}
+cor(Roller$Speed, select_if(Roller, is.numeric))
+
+```
+
+```{r}
+model <- lm(Speed ~ Height + Drop + Length + Duration + Inversions, data = Roller)
+model
+
+model %>% tidy()
+summary(model)
+```
+
+correlation between speed and all numerical values in the data set: adjusted R-squared = 0.9187
+
+Regression model: Speed = 0.041(Height) + 0.147(Drop) + 0.001(Length) - 0.029(Duration) -0.289(Inversions) + 35.796
+
+
+
+```{r}
+
+standard_error_of_model <- sqrt(deviance(model)/
+                                  df.residual(model))
+standard_error_of_model
+
+plot(fitted(model), resid(model))
+
+abline(h = 2*standard_error_of_model, col = "red")
+abline(h = -2*standard_error_of_model, col = "red")
+```
+
+```{r}
+residuals <- resid(model)
+sort(residuals)
+```
+Yes, there are 5 outlier residuals. They are outliers because they are outside the two standard deviation range in the graph. Over are 43, 3. Under are 19, 2, 16. Since the resiudal plot is random, it means that it is an appropriate to fit the model.
+
+
+```{r}
+h <- 2*(5+1)/101
+
+h
+```
+
+```{r}
+t <- qt(df = 101 - 5 - 2, 0.95)
+
+t
+```
+```{r}
+sort(hatvalues(model))
+
+```
+8 outliers based on leverage, 3, 98, 7, 99, 1, 93, 92, 94 All of them are over the value of H
+
+
+```{r}
+sort(jacknife <- rstudent(model))
+
+```
+24,17,16,2,19,95,53,54,43,3, All of the observations have values greater than T
+
+```{r}
+sort(cooks.distance(model))
+
+```
+
+
+```{r}
+
+plot(fitted(model), jacknife)
+
+abline(h = t, col = "red")
+abline(h = -t, col = "red")
+```
+
+yes, there are 10 outliers, the same number when calculated using jackknife
+
+
+```{r}
+qqnorm(resid(model))
+
+```
+
+The plot is not very linear meaning it is not a great model
+
+
+```{r}
+skewness(jacknife)
+
+```
+Data is positively skewed and is relatively close to 0 
+
+
+
+```{r}
+kurtosis(jacknife)
+
+```
+
+A positive kurtosis value means that the data distribution is more tail heavy and a sharper peak
+
+
+```{r}
+vif(model)
+
+```
+
+High VIF values tells that there is corrollation among the other variables such as Height and Drop
+
+```{r}
+eigprop(model)
+
+```
+
+
+High CI values such as 5 and 6 indicate that these variables may indicate high collinearity with the other
+variables. Low Eigenvalues such as 5 and 6 indicate that these variables have high collinearity with
+the other variables
+
+```{r}
+ols_step_forward_p(model)
+
+```
+Removed the variable inversions
+
+```{r}
+ols_step_backward_p(model)
+
+```
+
+Removed the variable inversions
+
+```{r}
+ols_step_both_p(model)
+
+```
+
+Removed the variable inversions
+
+```{r}
+ols_step_all_possible(model)
+
+```
+
+The appropriate model would include “Height Drop Length”
+This model has a Mallow’s CP that is closest to 6, found by k +1
+
+
+
+
