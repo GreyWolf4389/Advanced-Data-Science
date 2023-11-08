@@ -1,0 +1,114 @@
+---
+title: "NBA 22-23"
+author: "Gao"
+date: "2023-10-19"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+```
+
+```{r}
+NBA <- read_csv("NBA22.csv") %>% as_tibble()
+```
+
+```{r}
+cor(NBA$PTS, NBA$AGE)
+```
+
+```{r}
+cor(NBA$PTS, select_if(NBA, is.numeric))
+```
+
+```{r}
+model <- lm(PTS ~ HEIGHT + MIN + FGM + FTM + PF, data = NBA)
+model
+```
+
+```{r}
+plot(fitted(model),resid(model))
+```
+
+```{r}
+qqnorm(resid(model))
+```
+
+```{r}
+standard_error <- sqrt(deviance(model)/df.residual(model))
+standard_error
+```
+
+```{r}
+2*standard_error
+```
+
+```{r}
+plot(fitted(model),resid(model))
+abline(h=2*standard_error, col = "red")
+abline(h=-2*standard_error, col = "red")
+```
+
+```{r}
+residual <- resid(model)
+residual
+```
+
+```{r}
+sort(residual)
+```
+
+```{r}
+h <- 2*(5+1)/539
+h
+```
+
+```{r}
+sort(hatvalues(model))
+```
+
+```{r}
+t <- qt(df = 539 - 5 - 2, 0.95)
+t
+```
+
+```{r}
+sort(jackknife <- rstudent(model))
+```
+
+```{r}
+sort(cooks.distance(model))
+```
+
+```{r}
+skewness(jackknife)
+```
+
+```{r}
+kurtosis(jackknife)
+```
+
+```{r}
+NBA <- dummy_cols(NBA, select_columns = "DRAFT_ROUND", remove_first_dummy = TRUE)
+NBA
+```
+```{r}
+model2 <- lm(PTS ~ HEIGHT + MIN + FGM + FTM + PF + DRAFT_ROUND_2 + DRAFT_ROUND_Undrafted, data = NBA)
+summary(model2)
+model2 %>% tidy()
+```
+

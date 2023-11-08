@@ -1,0 +1,134 @@
+---
+title: "Rollercoaster"
+author: "Gao"
+date: "2023-10-30"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Import libraries or something
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+```
+
+Import the data
+
+```{r}
+rollercoasters <- read_csv("rollercoasters.csv") %>% as_tibble()
+```
+Find correlation between Speed and all numerical values
+
+```{r}
+cor(rollercoasters$Speed, select_if(rollercoasters, is.numeric))
+```
+
+Find the regression model
+
+```{r}
+model <- lm(Speed ~ Height + Drop + Length + Duration + Inversions, data = rollercoasters)
+summary(model)
+```
+
+Construct the residual plot
+
+```{r}
+plot(fitted(model), resid(model))
+```
+Draw outlier boundaries
+
+```{r}
+standard_error <- sqrt(deviance(model)/df.residual(model))
+standard_error
+2*standard_error
+plot(fitted(model),resid(model))
+abline(h=2*standard_error, col = "red")
+abline(h=-2*standard_error, col = "red")
+```
+
+2x standard error of mean: 8.068208
+There are 5 outliers that are outside of 2 standard errors of the mean. (Coasters 19, 2, 16, 43, 3)
+Display residual values
+
+```{r}
+residuals <- resid(model)
+sort(residuals)
+```
+
+Cook's Distance
+
+```{r}
+
+```
+
+
+Jackknife
+
+```{r}
+jac <- qt(df= 101 - 5 - 2, 0.95)
+jac
+sort(jackknife <- rstudent(model))
+```
+
+Jackknife = 1.661226
+Outliers: 19, 2, 16, 17, 24, 95, 53, 54, 43, 3
+
+Leverage
+
+```{r}
+lev <- 2 * (1+5)/101
+lev
+sort(hatvalues(model))
+```
+leverage = 0.1188119
+Outliers: 3, 98, 7, 99, 1, 93, 92, 94
+
+QQPlot
+
+```{r}
+qqnorm(resid(model))
+```
+
+```{r}
+
+```
+
+```{r}
+model <- lm(Speed ~ Height + Drop + Length + Duration + Inversions, data = rollercoasters)
+model
+```
+
+Speed-hat = 0.0407 * Height + 0.14685 * Drop + 0.00131 * Length + -0.2937 * Duration + -0.28856 * Inversions + 35.79567
+
+```{r}
+rollercoasters <- dummy_cols(rollercoasters, select_columns = "Track", remove_first_dummy = TRUE)
+rollercoasters
+```
+
+```{r}
+model2 <- lm(Speed ~ Height + Drop + Length + Duration + Inversions + Track_Wood, data = rollercoasters)
+summary(model2)
+model2 %>% tidy()
+```
+
+Multiple R-Squared Adjusted: 0.9183
+F-Value: 118.5
+P-Value: 2.2 * 10 ^ -16
+
+These values suggest that the model has a very strong fit
+
+```{r}
+plot(fitted(model), resid(model))
+```
+
