@@ -1,0 +1,359 @@
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+
+setwd("Documents")
+setwd("GitHub")
+setwd("Advanced-Data-Science")
+setwd("Gao")
+setwd("Semester Exam")
+getwd()
+
+NHL <- read_csv("train.csv") %>% as_tibble()
+NHL <- na.omit(NHL)
+summary(NHL)
+
+cor(NHL$Salary, select_if(NHL, is.numeric))
+NHL <- dummy_cols(NHL, select_columns = "Position", remove_first_dummy = TRUE)
+
+model <- lm(Salary ~ GP + GS + PM + PIM + Wt + iHDf + nzFOL + nzFOW + Position_CD + Position_CLW + Position_CRW + Position_CLWRW + Position_D + Position_LW + Position_LWRW + Position_RW, data = NHL)
+model
+
+standard_error <- sqrt(deviance(model)/df.residual(model))
+standard_error
+2*standard_error
+plot(fitted(model),resid(model))
+abline(h=2*standard_error, col = "blue")
+abline(h=-2*standard_error, col = "blue")
+abline(h=3*standard_error, col = "red")
+abline(h=-3*standard_error, col = "red")
+
+res_pot_outliers <- NHL %>% filter(2*standard_error <= abs(resid(model)) & abs(resid(model)) < 3*standard_error)
+print(res_pot_outliers)
+res_outliers <- NHL %>% filter(abs(resid(model)) >= 3*standard_error)
+print(res_pot_outliers)
+
+h <- 2*(9+1)/359
+h
+
+leverage<-hatvalues(model)
+sort(round(leverage,4))
+
+leverage_outliers <- NHL %>% filter(leverage > h)
+leverage_outliers
+
+t <- qt(df =  359 - 9 - 2, 0.95)
+t
+
+jackknife <- rstudent(model)
+sort(round(jackknife, 4))
+
+jackknife_outliers <- NHL %>% filter(jackknife > t | jackknife < -t)
+jackknife_outliers
+
+cookCV <- 4/359
+cookCV
+
+cook <- cooks.distance(model)
+sort(round(cook, 4))
+
+cook_outliers <- NHL %>% filter(cook > cookCV)
+cook_outliers
+
+ggplot(NHL, aes(x = fitted(model), y = jackknife)) + geom_point()+ geom_hline(yintercept = t, col = "purple") + geom_hline(yintercept = -t, col = "purple")
+
+qqnorm(resid(model))
+qqline(resid(model), col = "red", lwd = 2)
+
+qqPlot(resid(model))
+
+skewness(jackknife)
+kurtosis(jackknife)
+
+ols_vif_tol(model)
+
+eigprop(model)
+
+ols_step_forward_p(model)
+ols_step_backward_p(model)
+ols_step_both_p(model)
+
+NHL2 <- select(NHL,c(GP,GS, PM, PIM, Wt, iHDf, nzFOL, nzFOW))
+NHL2
+
+pairs.panels(NHL2)
+
+
+
+
+
+
+model2 <- lm(Salary ~ GS + Wt + iHDf + GP + PM + Position_CD + Position_CLW + Position_CRW + Position_CLWRW + Position_D + Position_LW + Position_LWRW + Position_RW, data = NHL)
+model2
+
+standard_error2 <- sqrt(deviance(model2)/df.residual(model2))
+standard_error2
+2*standard_error2
+plot(fitted(model2),resid(model2))
+abline(h=2*standard_error2, col = "blue")
+abline(h=-2*standard_error2, col = "blue")
+abline(h=3*standard_error2, col = "red")
+abline(h=-3*standard_error2, col = "red")
+
+res_pot_outliers2 <- NHL %>% filter(2*standard_error2 <= abs(resid(model2)) & abs(resid(model2)) < 3*standard_error2)
+print(res_pot_outliers2)
+res_outliers2 <- NHL %>% filter(abs(resid(model2)) >= 3*standard_error2)
+print(res_outliers2)
+
+h2 <- 2*(6+1)/359
+h2
+
+leverage2 <- hatvalues(model2)
+sort(round(leverage2,4))
+
+leverage_outliers2 <- NHL %>% filter(leverage2 > h2)
+leverage_outliers2
+
+t2 <- qt(df =  359 - 6 - 2, 0.95)
+t2
+
+jackknife2 <- rstudent(model2)
+sort(round(jackknife2, 4))
+
+jackknife_outliers2 <- NHL %>% filter(jackknife2 > t2 | jackknife2 < -t2)
+jackknife_outliers2
+
+cookCV2 <- 4/359
+cookCV2
+
+cook2 <- cooks.distance(model2)
+sort(round(cook2, 4))
+
+cook_outliers2 <- NHL %>% filter(cook2 > cookCV2)
+cook_outliers2
+
+ggplot(NHL, aes(x = fitted(model2), y = jackknife2)) + geom_point()+ geom_hline(yintercept = t2, col = "purple") + geom_hline(yintercept = -t2, col = "purple")
+
+qqnorm(resid(model2))
+qqline(resid(model2), col = "red", lwd = 2)
+
+qqPlot(resid(model2))
+
+skewness(jackknife2)
+kurtosis(jackknife2)
+
+ols_vif_tol(model2)
+
+eigprop(model2)
+
+ols_step_forward_p(model2)
+ols_step_backward_p(model2)
+ols_step_both_p(model2)
+
+
+
+
+
+model3 <- lm(Salary ~ GS + Wt + Position_CD + Position_CLW + Position_CRW + Position_CLWRW + Position_D + Position_LW + Position_LWRW + Position_RW, data = NHL)
+model3
+
+standard_error3 <- sqrt(deviance(model3)/df.residual(model5))
+standard_error3
+2*standard_error3
+plot(fitted(model3),resid(model3))
+abline(h=2*standard_error3, col = "blue")
+abline(h=-2*standard_error3, col = "blue")
+abline(h=3*standard_error3, col = "red")
+abline(h=-3*standard_error3, col = "red")
+
+res_pot_outliers3 <- NHL %>% filter(2*standard_error3 <= abs(resid(model3)) & abs(resid(model3)) < 3*standard_error3)
+print(res_pot_outliers3)
+res_outliers3 <- NHL %>% filter(abs(resid(model3)) >= 3*standard_error3)
+print(res_outliers3)
+
+h3 <- 2*(3+1)/359
+h3
+
+leverage3 <- hatvalues(model3)
+sort(round(leverage3,4))
+
+leverage_outliers3 <- NHL %>% filter(leverage3 > h3)
+leverage_outliers3
+
+t3 <- qt(df =  359 - 3 - 2, 0.95)
+t3
+
+jackknife3 <- rstudent(model3)
+sort(round(jackknife3, 4))
+
+jackknife_outliers3 <- NHL %>% filter(jackknife3 > t3 | jackknife3 < -t3)
+jackknife_outliers3
+
+cookCV3 <- 4/359
+cookCV3
+
+cook3 <- cooks.distance(model3)
+sort(round(cook3, 4))
+
+cook_outliers3 <- NHL %>% filter(cook3 > cookCV3)
+cook_outliers3
+
+ggplot(NHL, aes(x = fitted(model3), y = jackknife3)) + geom_point()+ geom_hline(yintercept = t3, col = "purple") + geom_hline(yintercept = -t3, col = "purple")
+
+qqnorm(resid(model3))
+qqline(resid(model3), col = "red", lwd = 2)
+
+qqPlot(resid(model3))
+
+skewness(jackknife3)
+kurtosis(jackknife3)
+
+ols_vif_tol(model3)
+
+eigprop(model3)
+
+ols_step_forward_p(model3)
+ols_step_backward_p(model3)
+ols_step_both_p(model3)
+
+
+
+
+
+model4 <- lm(Salary ~ GS + Wt + iHDf + GP + PM, data = NHL)
+model4
+
+standard_error4 <- sqrt(deviance(model4)/df.residual(model4))
+standard_error4
+2*standard_error4
+plot(fitted(model4),resid(model4))
+abline(h=2*standard_error4, col = "blue")
+abline(h=-2*standard_error4, col = "blue")
+abline(h=3*standard_error4, col = "red")
+abline(h=-3*standard_error4, col = "red")
+
+res_pot_outliers4 <- NHL %>% filter(2*standard_error4 <= abs(resid(model4)) & abs(resid(model4)) < 3*standard_error2)
+print(res_pot_outliers4)
+res_outliers4 <- NHL %>% filter(abs(resid(model4)) >= 3*standard_error4)
+print(res_outliers4)
+
+h4 <- 2*(5+1)/359
+h4
+
+leverage4 <- hatvalues(model4)
+sort(round(leverage4,4))
+
+leverage_outliers4 <- NHL %>% filter(leverage4 > h4)
+leverage_outliers4
+
+t4 <- qt(df =  359 - 5 - 2, 0.95)
+t4
+
+jackknife4 <- rstudent(model4)
+sort(round(jackknife4, 4))
+
+jackknife_outliers4 <- NHL %>% filter(jackknife4 > t4 | jackknife4 < -t4)
+jackknife_outliers4
+
+cookCV4 <- 4/359
+cookCV4
+
+cook4 <- cooks.distance(model4)
+sort(round(cook4, 4))
+
+cook_outliers4 <- NHL %>% filter(cook4 > cookCV4)
+cook_outliers4
+
+ggplot(NHL, aes(x = fitted(model4), y = jackknife4)) + geom_point()+ geom_hline(yintercept = t4, col = "purple") + geom_hline(yintercept = -t4, col = "purple")
+
+qqnorm(resid(model4))
+qqline(resid(model4), col = "red", lwd = 2)
+
+qqPlot(resid(model4))
+
+skewness(jackknife4)
+kurtosis(jackknife4)
+
+ols_vif_tol(model4)
+
+eigprop(model4)
+
+ols_step_forward_p(model4)
+ols_step_backward_p(model4)
+ols_step_both_p(model4)
+
+
+
+
+
+model5 <- lm(Salary ~ GS + Wt, data = NHL)
+model5
+
+standard_error5 <- sqrt(deviance(model5)/df.residual(model5))
+standard_error5
+2*standard_error5
+plot(fitted(model5),resid(model5))
+abline(h=2*standard_error5, col = "blue")
+abline(h=-2*standard_error5, col = "blue")
+abline(h=3*standard_error5, col = "red")
+abline(h=-3*standard_error5, col = "red")
+
+res_pot_outliers5 <- NHL %>% filter(2*standard_error5 <= abs(resid(model5)) & abs(resid(model5)) < 3*standard_error5)
+print(res_pot_outliers5)
+res_outliers5 <- NHL %>% filter(abs(resid(model5)) >= 3*standard_error5)
+print(res_outliers5)
+
+h5 <- 2*(2+1)/359
+h5
+
+leverage5 <- hatvalues(model5)
+sort(round(leverage5,4))
+
+leverage_outliers5 <- NHL %>% filter(leverage5 > h5)
+leverage_outliers5
+
+t5 <- qt(df =  359 - 3 - 2, 0.95)
+t5
+
+jackknife5 <- rstudent(model5)
+sort(round(jackknife5, 4))
+
+jackknife_outliers5 <- NHL %>% filter(jackknife5 > t5 | jackknife5 < -t5)
+jackknife_outliers5
+
+cookCV5 <- 4/359
+cookCV5
+
+cook5 <- cooks.distance(model5)
+sort(round(cook5, 4))
+
+cook_outliers5 <- NHL %>% filter(cook5 > cookCV5)
+cook_outliers5
+
+ggplot(NHL, aes(x = fitted(model5), y = jackknife5)) + geom_point()+ geom_hline(yintercept = t5, col = "purple") + geom_hline(yintercept = -t5, col = "purple")
+
+qqnorm(resid(model5))
+qqline(resid(model5), col = "red", lwd = 2)
+
+qqPlot(resid(model5))
+
+skewness(jackknife5)
+kurtosis(jackknife5)
+
+ols_vif_tol(model5)
+
+eigprop(model5)
+
+ols_step_forward_p(model5)
+ols_step_backward_p(model5)
+ols_step_both_p(model5)

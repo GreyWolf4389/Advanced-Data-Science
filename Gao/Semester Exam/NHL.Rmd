@@ -1,0 +1,50 @@
+---
+title: "Determination of Points Scored by NHL Players"
+author: "Gao"
+date: "2023-11-15"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, results='hide', results='hide'}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+```
+
+Import data from NHL Dataset
+
+```{r}
+NHL <- read_csv("nhldraft.csv") %>% as_tibble()
+NHL <- na.omit(NHL)
+summary(NHL)
+```
+
+Determine correlation
+
+```{r}
+cor(NHL$Points, select_if(NHL, is.numeric))
+
+NHL <- dummy_cols(NHL, select_columns = "Position", remove_first_dummy = TRUE)
+```
+
+```{r}
+model <- lm(Points ~ GamesPlayed + PlusMinus + PenaltyMinutes + Position_D + Position_F + Position_G + Position_LW + Position_RW + Position_W, data = NHL)
+model
+```
+

@@ -132,3 +132,8 @@ These values suggest that the model has a very strong fit
 plot(fitted(model), resid(model))
 ```
 
+```{r}
+Houses <- read_csv("houses.csv") %>% as_tibble()
+summary(Houses)
+```
+

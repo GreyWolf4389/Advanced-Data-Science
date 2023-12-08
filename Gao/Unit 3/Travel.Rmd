@@ -1,0 +1,197 @@
+---
+title: "TimeTravel"
+author: "Gao"
+date: "2023-11-08"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load libraries
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)          
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+```
+
+Load data, and summarize
+
+```{r}
+Travel <- read_csv("Travel_Times.csv") %>% as_tibble()
+summary(Travel)
+```
+
+```{r}
+cor(Travel$TotalTime, select_if(Travel, is.numeric))
+```
+
+```{r}
+Travel <- dummy_cols(Travel, select_columns = "Take407All", remove_first_dummy = TRUE)
+Travel
+```
+
+```{r}
+model <- lm(TotalTime ~ Distance + MaxSpeed + AvgSpeed + AvgMovingSpeed + MovingTime + Take407All_Yes, data = Travel)
+model
+```
+
+```{r}
+standard_error <- sqrt(deviance(model)/df.residual(model))
+standard_error
+2*standard_error
+plot(fitted(model),resid(model))
+abline(h=2*standard_error, col = "blue")
+abline(h=-2*standard_error, col = "blue")
+abline(h=3*standard_error, col = "red")
+abline(h=-3*standard_error, col = "red")
+```
+
+3 values may be outliers and 3 values here are outliers, as they lie outside of the 3SD lines. The residual plot shows how much the actual data deviates from the predicted value
+
+```{r}
+res_pot_outliers <- Travel %>% filter(2*standard_error <= abs(resid(model)) & abs(resid(model)) < 3*standard_error)
+print(res_pot_outliers)
+res_outliers <- Travel %>% filter(abs(resid(model)) >= 3*standard_error)
+print(res_pot_outliers)
+```
+
+
+```{r}
+h <- 2*(6+1)/205
+h
+```
+
+```{r}
+leverage<-hatvalues(model)
+sort(round(leverage,4))
+```
+
+The leverage critical value is 0.06929, and any leverage value exceeding it is thus considered an outlier.
+
+There are 18 outliers, observations 135, 91, 58, 149, 184, 159, 82, 119, 2015, 204, 40, 203, 93, 201, 190, 45, 50 and 99
+
+```{r}
+leverage_outliers <- Travel %>% filter(leverage > h)
+leverage_outliers
+```
+
+
+```{r}
+t <- qt(df = 205 - 6 - 2, 0.95)
+t
+```
+
+```{r}
+jackknife <- rstudent(model)
+sort(round(jackknife, 4))
+```
+
+There are 10 potential outliers, as their jackknife values exceed +/- 1.6526
+
+These observations are 99, 58, 150, 45, 203, 204, 205, 192, 50 and 201
+
+```{r}
+jackknife_outliers <- Travel %>% filter(jackknife > t | jackknife < -t)
+jackknife_outliers
+```
+
+```{r}
+cookCV <- 4/205
+cookCV
+```
+
+```{r}
+cook <- cooks.distance(model)
+sort(round(cook, 4))
+```
+
+Any value that exceeds 0.0195 is considered an outlier, thus there are 12 total outliers
+
+These are observations 40, 93, 159, 150, 58, 203, 204, 205, 45, 50, 201, 99
+
+```{r}
+cook_outliers <- Travel %>% filter(cook > cookCV)
+cook_outliers
+```
+
+```{r}
+ggplot(Travel, aes(x = fitted(model), y = jackknife)) + geom_point()+ geom_hline(yintercept = t, col = "purple") + geom_hline(yintercept = -t, col = "purple")
+```
+
+Though it is a bit hard to see, there are 10 outliers
+
+```{r}
+qqnorm(resid(model))
+qqline(resid(model), col = "red", lwd = 2)
+```
+
+The QQPlot tests the normality of the data. Our data is not normal because the plot displays curvature, especially at the +x end
+
+```{r}
+qqPlot(resid(model))
+```
+99 and 201 are the extreme outliers here
+
+```{r}
+skewness(jackknife)
+kurtosis(jackknife)
+```
+
+This shows that the normality assumption is violated, as neither value is very close to 0.
+
+```{r}
+ols_vif_tol(model)
+```
+
+Tolerance is less than 0.1 for avgmovingspeed and movingtime, and VIF is greater than 10 for those same variables, thus we have colinearity issues
+
+```{r}
+eigprop(model)
+```
+
+Four of the independent variables have CI scores in excess of 30, but their eigenvalues are below 0.9.
+
+```{r}
+ols_step_forward_p(model)
+ols_step_backward_p(model)
+ols_step_both_p(model)
+```
+
+All three methods recommend a model with movingtime, avgspeed, avgmovingspeed, and take407all_yes, while they all excluded distance and maxspeed
+
+```{r}
+model2 <- lm(TotalTime ~ AvgSpeed + AvgMovingSpeed + MovingTime + Take407All_Yes, data = Travel)
+model2
+```
+
+```{r}
+pos <- ols_step_all_possible(model)
+```
+
+With n = 6, r^2 adjusted = 0.9078, and mallow's CP = 7
+With n = 5, r^2 adjusted = 0.9082, and mallow's CP = 5.1570
+With n = 4, r^2 adjusted = 0.9082, and mallow's CP = 4.1740
+With n = 3, r^2 adjusted = 0.9066, and mallow's CP = 6.6455
+
+The first and last models may have concerns with Mallow's CP, and Model n = 4 is ideal, with AvgSpeed AvgMovingSpeed MovingTime Take407All_Yes being the best model
+
+```{r}
+ols_step_best_subset(model)
+```
+
+The best model has the highest r^2 adjusted, while the Mallow's CP closest to n + 1, and the smallest AIC value. Thus model 4 is ideal.
