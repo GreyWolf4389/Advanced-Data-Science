@@ -5,7 +5,7 @@ library(mctest)
 library(olsrr)
 library(jtools)
 library(ggcorrplot)
-library(yardstick)
+library(yardstick)e
 library(car)
 library(moments)
 library(GGally)
@@ -88,7 +88,11 @@ ols_step_forward_p(model)
 ols_step_backward_p(model)
 ols_step_both_p(model)
 
-NHL2 <- select(NHL,c(GP,GS, PM, PIM, Wt, iHDf, nzFOL, nzFOW))
+
+
+
+
+GNHL2 <- select(NHL,c(GP,GS, PM, PIM, Wt, iHDf, nzFOL, nzFOW))
 NHL2
 
 pairs.panels(NHL2)
@@ -167,7 +171,7 @@ ols_step_both_p(model2)
 model3 <- lm(Salary ~ GS + Wt + Position_CD + Position_CLW + Position_CRW + Position_CLWRW + Position_D + Position_LW + Position_LWRW + Position_RW, data = NHL)
 model3
 
-standard_error3 <- sqrt(deviance(model3)/df.residual(model5))
+standard_error3 <- sqrt(deviance(model3)/df.residual(model3))
 standard_error3
 2*standard_error3
 plot(fitted(model3),resid(model3))
@@ -253,7 +257,7 @@ h4
 leverage4 <- hatvalues(model4)
 sort(round(leverage4,4))
 
-leverage_outliers4 <- NHL %>% filter(leverage4 > h4)
+saleverage_outliers4 <- NHL %>% filter(leverage4 > h4)
 leverage_outliers4
 
 t4 <- qt(df =  359 - 5 - 2, 0.95)
