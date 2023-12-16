@@ -5,7 +5,7 @@ library(mctest)
 library(olsrr)
 library(jtools)
 library(ggcorrplot)
-library(yardstick)e
+library(yardstick)
 library(car)
 library(moments)
 library(GGally)
@@ -28,6 +28,8 @@ NHL <- dummy_cols(NHL, select_columns = "Position", remove_first_dummy = TRUE)
 
 model <- lm(Salary ~ GP + GS + PM + PIM + Wt + iHDf + nzFOL + nzFOW + Position_CD + Position_CLW + Position_CRW + Position_CLWRW + Position_D + Position_LW + Position_LWRW + Position_RW, data = NHL)
 model
+
+summary(model)
 
 standard_error <- sqrt(deviance(model)/df.residual(model))
 standard_error
@@ -82,17 +84,21 @@ kurtosis(jackknife)
 
 ols_vif_tol(model)
 
+vif(model)
+
 eigprop(model)
 
 ols_step_forward_p(model)
 ols_step_backward_p(model)
 ols_step_both_p(model)
 
+Model1AllPossible <- ols_step_all_possible(model)
 
 
 
 
-GNHL2 <- select(NHL,c(GP,GS, PM, PIM, Wt, iHDf, nzFOL, nzFOW))
+
+NHL2 <- select(NHL,c(GP,GS, PM, PIM, Wt, iHDf, nzFOL, nzFOW))
 NHL2
 
 pairs.panels(NHL2)
@@ -104,6 +110,8 @@ pairs.panels(NHL2)
 
 model2 <- lm(Salary ~ GS + Wt + iHDf + GP + PM + Position_CD + Position_CLW + Position_CRW + Position_CLWRW + Position_D + Position_LW + Position_LWRW + Position_RW, data = NHL)
 model2
+
+summary(model2)
 
 standard_error2 <- sqrt(deviance(model2)/df.residual(model2))
 standard_error2
@@ -158,11 +166,16 @@ kurtosis(jackknife2)
 
 ols_vif_tol(model2)
 
+vif(model2)
+
 eigprop(model2)
 
 ols_step_forward_p(model2)
 ols_step_backward_p(model2)
 ols_step_both_p(model2)
+
+Model1AllPossible2 <- ols_step_all_possible(model2)
+
 
 
 
@@ -170,6 +183,8 @@ ols_step_both_p(model2)
 
 model3 <- lm(Salary ~ GS + Wt + Position_CD + Position_CLW + Position_CRW + Position_CLWRW + Position_D + Position_LW + Position_LWRW + Position_RW, data = NHL)
 model3
+
+summary(model3)
 
 standard_error3 <- sqrt(deviance(model3)/df.residual(model3))
 standard_error3
@@ -224,11 +239,16 @@ kurtosis(jackknife3)
 
 ols_vif_tol(model3)
 
+vif(model3)
+
 eigprop(model3)
 
 ols_step_forward_p(model3)
 ols_step_backward_p(model3)
 ols_step_both_p(model3)
+
+Model1AllPossible3 <- ols_step_all_possible(model3)
+
 
 
 
@@ -236,6 +256,8 @@ ols_step_both_p(model3)
 
 model4 <- lm(Salary ~ GS + Wt + iHDf + GP + PM, data = NHL)
 model4
+
+summary(model4)
 
 standard_error4 <- sqrt(deviance(model4)/df.residual(model4))
 standard_error4
@@ -257,7 +279,7 @@ h4
 leverage4 <- hatvalues(model4)
 sort(round(leverage4,4))
 
-saleverage_outliers4 <- NHL %>% filter(leverage4 > h4)
+leverage_outliers4 <- NHL %>% filter(leverage4 > h4)
 leverage_outliers4
 
 t4 <- qt(df =  359 - 5 - 2, 0.95)
@@ -290,11 +312,16 @@ kurtosis(jackknife4)
 
 ols_vif_tol(model4)
 
+vif(model4)
+
 eigprop(model4)
 
 ols_step_forward_p(model4)
 ols_step_backward_p(model4)
 ols_step_both_p(model4)
+
+Model1AllPossible4 <- ols_step_all_possible(model4)
+
 
 
 
@@ -302,6 +329,8 @@ ols_step_both_p(model4)
 
 model5 <- lm(Salary ~ GS + Wt, data = NHL)
 model5
+
+summary(model5)
 
 standard_error5 <- sqrt(deviance(model5)/df.residual(model5))
 standard_error5
@@ -356,8 +385,13 @@ kurtosis(jackknife5)
 
 ols_vif_tol(model5)
 
+vif(model5)
+
 eigprop(model5)
 
 ols_step_forward_p(model5)
 ols_step_backward_p(model5)
 ols_step_both_p(model5)
+
+Model1AllPossible5 <- ols_step_all_possible(model5)
+
