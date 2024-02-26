@@ -1,0 +1,136 @@
+---
+title: "Feb22"
+author: "Gao"
+date: "2024-02-22"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(datasets)
+library(tidymodels)
+library(tidyverse)
+library(rpart.plot)
+library(caret)
+library(ggforce)
+```
+
+```{r}
+irises <- as_tibble(iris)
+
+irises
+```
+
+```{r}
+irises$Species %>% unique()
+
+iris_split <- initial_split(irises, prop = 0.75)
+
+train <- training(iris_split)
+
+test <- testing(iris_split)
+
+train
+
+test
+```
+
+```{r}
+ggplot(data = irises, aes(x = .panel_x, y = .panel_y)) + 
+  geom_point(aes(color = Species)) + 
+  geom_autodensity(aes(fill = Species)) + 
+  geom_boxplot(aes(fill = Species)) + 
+  facet_matrix(vars(Sepal.Length:Petal.Width), 
+               layer.lower = 1, 
+               layer.diag = 2, 
+               layer.upper = 3)
+
+ggplot(data = train, aes(x = .panel_x, y = .panel_y)) + 
+  geom_point(aes(color = Species)) + 
+  geom_autodensity(aes(fill = Species)) + 
+  geom_boxplot(aes(fill = Species)) + 
+  facet_matrix(vars(Sepal.Length:Petal.Width), 
+               layer.lower = 1, 
+               layer.diag = 2, 
+               layer.upper = 3)
+
+ggplot(data = test, aes(x = .panel_x, y = .panel_y)) + 
+  geom_point(aes(color = Species)) + 
+  geom_autodensity(aes(fill = Species)) + 
+  geom_boxplot(aes(fill = Species)) + 
+  facet_matrix(vars(Sepal.Length:Petal.Width), 
+               layer.lower = 1, 
+               layer.diag = 2, 
+               layer.upper = 3)
+```
+
+```{r}
+ggplot(filter(train, Species != "setosa")) + geom_point(aes(x = Petal.Length, y = Petal.Width, color = Species), size = 3) + scale_color_manual(values = c("#00BA38", "#619CFF"))
+```
+
+```{r}
+dtree_mod <- decision_tree(mode = "classification", min_n = 4, tree_depth = 3)
+
+dtree_mod_fit <- fit(object = dtree_mod, formula = Species ~ ., data = train)
+
+dtree_mod_fit %>% extract_fit_engine() %>% rpart.plot()
+``` 
+
+```{r}
+predictions <- predict(dtree_mod_fit, new_data = test)
+
+confusionMatrix(data = predictions$.pred_class, reference = test$Species)
+
+dtree_mod_fit %>% extract_fit_engine() %>% varImp()
+```
+
+```{r}
+dtree_mod_fit2 <- dtree_mod %>% fit(Species ~ Petal.Length + Petal.Width, data = train)
+
+dtree_mod_fit2
+
+dtree_mod_fit2 %>% extract_fit_engine() %>% rpart.plot()
+
+predictions2 <- predict(dtree_mod_fit2, new_data = test)
+
+confusionMatrix(data = predictions2$.pred_class, reference = test$Species)
+
+dtree_mod_fit2 %>% extract_fit_engine() %>% varImp()
+```
+
+```{r}
+dtree_mod_hyper <- decision_tree(mode = "classification",
+                                 min_n = 1, tree_depth = 4,
+                                 cost_complexity = 0)
+
+dtree_mod_hyper_fit <- dtree_mod_hyper %>%
+  fit(Species ~ Petal.Length + Petal.Width, data = train)
+
+dtree_mod_hyper_fit %>% extract_fit_engine() %>% rpart.plot()
+```
+
+```{r}
+#Cohen's Kappa
+#<= 0.2, no reliability
+#0.21 to 0.39, minimal reliability
+#0.40 to 0.59, weak reliability
+#0.60 to 0.79, moderate reliability
+#0.80 to 0.90, strong reliability
+#>0.90, nearly perfect reliability
+
+predictions <- predict(dtree_mod_fit, new_data = test)
+
+confusionMatrix(data = predictions$.pred_class, reference = test$Species)
+
+predictions_hyper <- predict(dtree_mod_hyper_fit, new_data = test)
+
+confusionMatrix(data = predictions_hyper$.pred_class, reference = test$Species)
+```
+
+
+

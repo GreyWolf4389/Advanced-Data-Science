@@ -1,0 +1,21 @@
+---
+title: "MonteCarlo02072024"
+author: "Gao"
+date: "2024-02-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+die <- c(1,2,3,4,5,6)
+
+results <- sample(die,10, replace = TRUE)
+```
+
+```{r}
+hist(results)
+```
+

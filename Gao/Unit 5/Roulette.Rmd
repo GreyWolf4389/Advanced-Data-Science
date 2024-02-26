@@ -1,0 +1,109 @@
+---
+title: "Roulette"
+author: "Gao"
+date: "2024-02-12"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+Roulette <- read_csv("Roulette.csv")
+
+Roulette
+```
+
+```{r}
+library(fastDummies)
+
+Roulette <- dummy_cols(Roulette, select_columns="Color", remove_first_dummy = TRUE)
+
+Roulette
+```
+
+```{r}
+library(epiDisplay)
+
+colorsim <- sample(Roulette$Color, 100, replace = TRUE)
+
+tab1(colorsim, col = c("black", "green", "red"))
+```
+```{r}
+play_spin <- function(bet_value, bets_on, bets_odds){
+  sample(0:37, 1, replace + TRUE)
+  }
+
+spin <- sample(Roulette$Color, 1000, replace = TRUE)
+
+profit <- 0
+
+tab1(spin, col = c("black", "green", "red"))
+
+for(i in 1:length(spin)){if(spin[[i]] == "Red"){profit = profit + 1} else {profit = profit - 1}}
+
+profit
+
+proft <- 0
+```
+```{r}
+tab1(spin, col = c("black", "green", "red"))
+
+spin2 <- sample(Roulette$Number, 100, replace = TRUE)
+
+profit <- 0
+
+for(i in 1:length(spin2)){if(spin[[i]] == "24"){profit = profit + 35*100} else {profit = profit - 100}}
+
+profit
+
+proft <- 0
+```
+
+```{r}
+winnum <- c(2,5,8,11,14,17,20,23,26,29,32,35)
+  
+spin3 <- sample(Roulette$Number, 1000, replace = TRUE)
+
+profit <- 0
+
+for(i in 1:length(spin3)){if(spin[[i]] %in% winnum){profit = profit + 200} else {profit = profit - 100}}
+
+profit
+
+proft <- 0
+```
+
+
+```{r}
+winnum2 <- c(00)
+  
+spin4 <- sample(Roulette$Number, 1000, replace = TRUE)
+
+profit <- 0
+
+for(i in 1:length(spin4)){if(spin4[[i]] == 00){profit = profit + 3500} else {profit = profit - 100}}
+
+profit
+
+proft <- 0
+```
+
+```{r}
+winnum3 <- c(0,00)
+  
+spin3 <- sample(Roulette$Number, 10, replace = TRUE)
+
+profit <- 0
+
+for(i in 1:length(spin3)){if(spin[[i]] %in% winnum3){profit = profit + 1700} else {profit = profit - 100}}
+
+profit
+
+profit <- 0
+```

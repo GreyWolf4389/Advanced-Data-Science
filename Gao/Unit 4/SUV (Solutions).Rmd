@@ -1,0 +1,191 @@
+---
+title: "SUV"
+author: "Worcester"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Question 1
+
+Can you predict whether or not a person purchases a SUV (1 = purchased a SUV, 0 = did not purchase a SUV) based on their age (AGE), annual salary (SAL) and gender (GEN) (Male = 1, Female = 0).
+
+Part A
+
+Fit the logistic regression model that regresses SUV on the predictors AGE, SAL and GEN.
+
+```{r}
+library("tidyverse")
+
+SUV <- read_csv("SUV.csv") %>% 
+  as_tibble()
+```
+
+```{r}
+
+model1SUV <- glm(SUV ~ GEN + AGE + SAL, family = "binomial", data = SUV)
+
+summary(model1SUV)
+
+```
+
+$\operatorname{logit}\left[ \widehat{\text{pr}}\left( Y=1 \right) \right]=-12.78+0.334\left( \text{GEN} \right)+0.237\left( \text{AGE} \right)+0.00004\left( \text{SAL} \right)$
+
+Part B
+
+Compute the estimate odds ratio for purchasing a SUV for persons who are male and those who are female, controlling for age and salary.
+
+```{r}
+
+OR <- model1SUV$coefficients[["GEN"]]
+print(exp(OR))
+
+```
+
+${{\widehat{OR}}_{\left( \text{GEN=1 vs}\text{. GEN=0   }\text{  | } \text{ AGE, SAL} \right)}}={{e}^{{{\beta }_{1}}}}={{e}^{0.3338}}\approx 1.396$
+
+
+Part C
+
+Interpret your answer in part (B) in the context of the problem.
+
+The estimated odds of purchasing a SUV for a male is 1.396 times greater than a female.
+
+Part D
+
+Construct a 95% confidence interval for the estimate odds ratio in part (B).
+
+```{r}
+
+beta1 <- model1SUV$coefficients[["GEN"]]
+print(beta1)
+
+zcrit <- qnorm(0.975)
+print(zcrit)
+
+stddevbeta1 <- coef(summary(model1SUV))[2, "Std. Error"]
+print(stddevbeta1)
+
+lb <- exp(beta1 - zcrit*stddevbeta1)
+ub <- exp(beta1 + zcrit*stddevbeta1)
+
+print(lb)
+print(ub)
+
+print(paste0("The 95% confidence interval for the estimate odds ratio in part (B) is (", round(lb, 4), ", ", round(ub, 4), ")"))
+
+```
+
+Part E
+
+Test the null hypothesis that the adjusted odds ratio from part (B) equals 1.  Use the Wald test.
+
+```{r}
+
+library(lmtest)
+
+waldtest(model1SUV, test="Chisq", terms=1)
+
+```
+
+$\text{H}_{0}: \beta_{1} = 0$
+
+$\text{H}_{a}: \beta_{1} \ne 0$
+
+$\text{T.S.: } \chi^2 = 1.196$
+
+$\text{p-value: } P(\chi^2 \ge 1.196) \approx 0.2741$
+
+Conclusion: Since the p-value > $\alpha$, Do not Reject $\text{H}_{0}$. At the $\alpha$ = 0.05 significance level there is insufficient evidence to indicate that being a male significantly increases the odds of purchasing of a SUV.
+
+Part F
+
+Test the null hypothesis that the adjusted odds ratio from part (B) equals 1.  Use the LR test.
+
+```{r}
+
+model1SUV <- glm(SUV ~ GEN + AGE + SAL, family = "binomial", data = SUV)
+
+summary(model1SUV)
+
+model2SUV <- glm(SUV ~ AGE + SAL, family = "binomial", data = SUV)
+
+summary(model2SUV)
+
+1-pchisq(1.21,df=1)
+
+```
+
+$\text{H}_{0}: \beta_{1} = 0$
+
+$\text{H}_{a}: \beta_{1} \ne 0$
+
+$\text{T.S.: } \text{LR}=-2\log {{\hat{L}}_{R}}-\left( -2\log {{{\hat{L}}}_{C}} \right)=277.05-275.84=1.21$
+
+$\text{p-value: } P(\chi^2 \ge 1.21) \approx 0.2713$
+
+Conclusion: Since the p-value > $\alpha$, Do not Reject $\text{H}_{0}$. At the $\alpha$ = 0.05 significance level there is insufficient evidence to indicate that being a male significantly increases the odds of purchasing of a SUV.
+
+Part G
+
+Calculate the estimated odds ratio for two people, one with an age of 40 and the other a 52 year old, controlling for salary and gender.
+
+```{r}
+
+OR2 <- model1SUV$coefficients[["AGE"]]
+print(exp(12*OR2))
+
+```
+
+${{\widehat{OR}}_{\left( \text{AGE=52 }-\text{ AGE=40 = 12  }\text{  | } \text{  GEN, SAL} \right)}}={{e}^{12{{\beta }_{2}}}}={{e}^{12\left( 0.2370 \right)}}\approx 17.178$
+
+Part H
+
+Fit a logistic model that regresses SUV on the predictors AGE, SAL, GEN and the interaction term between AGE and GEN.
+
+```{r}
+
+model3SUV <- glm(SUV ~ GEN + AGE + SAL + GEN:AGE, family = "binomial", data = SUV)
+
+summary(model3SUV)
+
+```
+
+$\operatorname{logit}\left[ \widehat{\text{pr}}\left( Y=1 \right) \right]=-12.13-1.214\left( \text{GEN} \right)+0.2210\left( \text{AGE} \right)+0.00004\left( \text{SAL} \right)+0.0384\left( \text{GEN:AGE} \right)$
+
+Part I
+
+Using the model from (H), compute the 95% confidence interval for the estimated adjusted odds ratio for the effect of gender, controlling for AGE and SAL when a person is 25 years old.
+
+```{r}
+
+var(SUV)
+
+round(vcov(model3SUV),4)
+
+```
+
+$\exp \left[ {{{\hat{\beta }}}_{1}}+{{{\hat{\beta }}}_{4}}\left( \text{AGE} \right)\pm 1.960\left( {{\left( \text{GEN} \right)}^{2}}\cdot \widehat{\text{Var}}\left( {{{\hat{\beta }}}_{1}} \right)+{{\left( \text{AGE} \right)}^{2}}\cdot \widehat{\text{Var}}\left( {{{\hat{\beta }}}_{4}} \right)+2\left( \text{GEN} \right)\left( \text{AGE} \right)\cdot \widehat{\text{Cov}}\left( {{{\hat{\beta }}}_{1}},{{{\hat{\beta }}}_{4}} \right) \right) \right]$
+
+$=\exp \left[ -1.214+0.0384\left( 25 \right)\pm 1.960\left( {{\left( 1 \right)}^{2}}\cdot {{\left( 1.877 \right)}^{2}}+{{\left( 25 \right)}^{2}}\cdot {{\left( 0.0459 \right)}^{2}}+2\left( 1 \right)\left( 25 \right)\left( -0.0851 \right) \right) \right]$
+
+$=\exp \left[ -0.254\pm 1.146 \right]$
+
+$=\left( {{e}^{-0.254-1.146}},{{e}^{-0.254+1.146}} \right)$
+
+$=\left( 0.247,2.441 \right)$
+
+Part J
+
+What does the confidence interval in part (I) tell you?
+
+We are 95% confident that the odds of purchasing a SUV for 25 years old males are between 0.247 and 2.441 times greater than the corresponding odds for 25 year old females, when controlling for the effects of age and annual salary.
+
+Since 1 is contained in the interval, there isn’t sufficient evidence that the odds of purchasing a SUV differs for 25 year old males and females.
+
+

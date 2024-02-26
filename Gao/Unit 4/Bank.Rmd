@@ -1,0 +1,77 @@
+---
+title: "Bank"
+author: "Gao"
+date: "2024-01-18"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)          
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+library(lmtest)
+```
+
+```{r}
+Bank <- read_csv("BankFailures.csv") %>% as_tibble()
+summary(Bank)
+Bank
+```
+
+```{r}
+Banks <- dummy_cols(Bank, select_columns = "MONTH", remove_first_dummy = TRUE)
+Banks
+```
+
+```{r}
+model1Bank <- glm(FAILURES ~ ADJTA + MONTH_Jan + MONTH_Feb + MONTH_Mar + MONTH_May + MONTH_Jun + MONTH_Jul + MONTH_Aug + MONTH_Sep + MONTH_Oct + MONTH_Nov + MONTH_Dec, family = "poisson", data = Banks)
+summary(model1Bank)
+model1Bank
+```
+
+```{r}
+round(exp(coef(model1Bank)), 4)
+
+round(exp(confint(model1Bank, level = 0.95)), 4)
+
+(0.9986-1) * 100
+(0.9998-1) * 100
+```
+
+```{r}
+model2Bank <- glm(FAILURES ~ MONTH_Jan + MONTH_Feb + MONTH_Mar + MONTH_May + MONTH_Jun + MONTH_Jul + MONTH_Aug + MONTH_Sep + MONTH_Oct + MONTH_Nov + MONTH_Dec, family = "poisson", data = Banks)
+summary(model2Bank)
+model2Bank
+
+
+exp(coef(model2Bank))
+
+exp(confint(model2Bank, level = 0.95))
+```
+
+```{r}
+anova(model2Bank, model1Bank, test = "Chisq")
+```
+
+
+
+
+
+
+

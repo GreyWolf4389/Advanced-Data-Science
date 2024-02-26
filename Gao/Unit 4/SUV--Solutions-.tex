@@ -1,0 +1,538 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={SUV},
+  pdfauthor={Worcester},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{SUV}
+\author{Worcester}
+\date{2024-02-04}
+
+\begin{document}
+\maketitle
+
+Question 1
+
+Can you predict whether or not a person purchases a SUV (1 = purchased a
+SUV, 0 = did not purchase a SUV) based on their age (AGE), annual salary
+(SAL) and gender (GEN) (Male = 1, Female = 0).
+
+Part A
+
+Fit the logistic regression model that regresses SUV on the predictors
+AGE, SAL and GEN.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"tidyverse"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.5
+## v forcats   1.0.0     v stringr   1.5.1
+## v ggplot2   3.4.4     v tibble    3.2.1
+## v lubridate 1.9.3     v tidyr     1.3.0
+## v purrr     1.0.2     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{SUV }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"SUV.csv"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{as\_tibble}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 400 Columns: 4
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## dbl (4): GEN, AGE, SAL, SUV
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1SUV }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(SUV }\SpecialCharTok{\textasciitilde{}}\NormalTok{ GEN }\SpecialCharTok{+}\NormalTok{ AGE }\SpecialCharTok{+}\NormalTok{ SAL, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ SUV)}
+
+\FunctionTok{summary}\NormalTok{(model1SUV)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = SUV ~ GEN + AGE + SAL, family = "binomial", data = SUV)
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -1.278e+01  1.359e+00  -9.405  < 2e-16 ***
+## GEN          3.338e-01  3.052e-01   1.094    0.274    
+## AGE          2.370e-01  2.638e-02   8.984  < 2e-16 ***
+## SAL          3.644e-05  5.473e-06   6.659 2.77e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 521.57  on 399  degrees of freedom
+## Residual deviance: 275.84  on 396  degrees of freedom
+## AIC: 283.84
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\(\operatorname{logit}\left[ \widehat{\text{pr}}\left( Y=1 \right) \right]=-12.78+0.334\left( \text{GEN} \right)+0.237\left( \text{AGE} \right)+0.00004\left( \text{SAL} \right)\)
+
+Part B
+
+Compute the estimate odds ratio for purchasing a SUV for persons who are
+male and those who are female, controlling for age and salary.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OR }\OtherTok{\textless{}{-}}\NormalTok{ model1SUV}\SpecialCharTok{$}\NormalTok{coefficients[[}\StringTok{"GEN"}\NormalTok{]]}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{exp}\NormalTok{(OR))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.396324
+\end{verbatim}
+
+\({{\widehat{OR}}_{\left( \text{GEN=1 vs}\text{. GEN=0   }\text{  | } \text{ AGE, SAL} \right)}}={{e}^{{{\beta }_{1}}}}={{e}^{0.3338}}\approx 1.396\)
+
+Part C
+
+Interpret your answer in part (B) in the context of the problem.
+
+The estimated odds of purchasing a SUV for a male is 1.396 times greater
+than a female.
+
+Part D
+
+Construct a 95\% confidence interval for the estimate odds ratio in part
+(B).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta1 }\OtherTok{\textless{}{-}}\NormalTok{ model1SUV}\SpecialCharTok{$}\NormalTok{coefficients[[}\StringTok{"GEN"}\NormalTok{]]}
+\FunctionTok{print}\NormalTok{(beta1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3338434
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{zcrit }\OtherTok{\textless{}{-}} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(zcrit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.959964
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stddevbeta1 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(}\FunctionTok{summary}\NormalTok{(model1SUV))[}\DecValTok{2}\NormalTok{, }\StringTok{"Std. Error"}\NormalTok{]}
+\FunctionTok{print}\NormalTok{(stddevbeta1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3052264
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lb }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(beta1 }\SpecialCharTok{{-}}\NormalTok{ zcrit}\SpecialCharTok{*}\NormalTok{stddevbeta1)}
+\NormalTok{ub }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(beta1 }\SpecialCharTok{+}\NormalTok{ zcrit}\SpecialCharTok{*}\NormalTok{stddevbeta1)}
+
+\FunctionTok{print}\NormalTok{(lb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7676745
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(ub)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.539777
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"The 95\% confidence interval for the estimate odds ratio in part (B) is ("}\NormalTok{, }\FunctionTok{round}\NormalTok{(lb, }\DecValTok{4}\NormalTok{), }\StringTok{", "}\NormalTok{, }\FunctionTok{round}\NormalTok{(ub, }\DecValTok{4}\NormalTok{), }\StringTok{")"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "The 95% confidence interval for the estimate odds ratio in part (B) is (0.7677, 2.5398)"
+\end{verbatim}
+
+Part E
+
+Test the null hypothesis that the adjusted odds ratio from part (B)
+equals 1. Use the Wald test.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lmtest)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: zoo
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{waldtest}\NormalTok{(model1SUV, }\AttributeTok{test=}\StringTok{"Chisq"}\NormalTok{, }\AttributeTok{terms=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Wald test
+## 
+## Model 1: SUV ~ GEN + AGE + SAL
+## Model 2: SUV ~ AGE + SAL
+##   Res.Df Df  Chisq Pr(>Chisq)
+## 1    396                     
+## 2    397 -1 1.1963     0.2741
+\end{verbatim}
+
+\(\text{H}_{0}: \beta_{1} = 0\)
+
+\(\text{H}_{a}: \beta_{1} \ne 0\)
+
+\(\text{T.S.: } \chi^2 = 1.196\)
+
+\(\text{p-value: } P(\chi^2 \ge 1.196) \approx 0.2741\)
+
+Conclusion: Since the p-value \textgreater{} \(\alpha\), Do not Reject
+\(\text{H}_{0}\). At the \(\alpha\) = 0.05 significance level there is
+insufficient evidence to indicate that being a male significantly
+increases the odds of purchasing of a SUV.
+
+Part F
+
+Test the null hypothesis that the adjusted odds ratio from part (B)
+equals 1. Use the LR test.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1SUV }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(SUV }\SpecialCharTok{\textasciitilde{}}\NormalTok{ GEN }\SpecialCharTok{+}\NormalTok{ AGE }\SpecialCharTok{+}\NormalTok{ SAL, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ SUV)}
+
+\FunctionTok{summary}\NormalTok{(model1SUV)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = SUV ~ GEN + AGE + SAL, family = "binomial", data = SUV)
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -1.278e+01  1.359e+00  -9.405  < 2e-16 ***
+## GEN          3.338e-01  3.052e-01   1.094    0.274    
+## AGE          2.370e-01  2.638e-02   8.984  < 2e-16 ***
+## SAL          3.644e-05  5.473e-06   6.659 2.77e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 521.57  on 399  degrees of freedom
+## Residual deviance: 275.84  on 396  degrees of freedom
+## AIC: 283.84
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model2SUV }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(SUV }\SpecialCharTok{\textasciitilde{}}\NormalTok{ AGE }\SpecialCharTok{+}\NormalTok{ SAL, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ SUV)}
+
+\FunctionTok{summary}\NormalTok{(model2SUV)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = SUV ~ AGE + SAL, family = "binomial", data = SUV)
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -1.243e+01  1.300e+00  -9.566  < 2e-16 ***
+## AGE          2.335e-01  2.591e-02   9.013  < 2e-16 ***
+## SAL          3.590e-05  5.429e-06   6.613 3.77e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 521.57  on 399  degrees of freedom
+## Residual deviance: 277.05  on 397  degrees of freedom
+## AIC: 283.05
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{1}\SpecialCharTok{{-}}\FunctionTok{pchisq}\NormalTok{(}\FloatTok{1.21}\NormalTok{,}\AttributeTok{df=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.2713321
+\end{verbatim}
+
+\(\text{H}_{0}: \beta_{1} = 0\)
+
+\(\text{H}_{a}: \beta_{1} \ne 0\)
+
+\(\text{T.S.: } \text{LR}=-2\log {{\hat{L}}_{R}}-\left( -2\log {{{\hat{L}}}_{C}} \right)=277.05-275.84=1.21\)
+
+\(\text{p-value: } P(\chi^2 \ge 1.21) \approx 0.2713\)
+
+Conclusion: Since the p-value \textgreater{} \(\alpha\), Do not Reject
+\(\text{H}_{0}\). At the \(\alpha\) = 0.05 significance level there is
+insufficient evidence to indicate that being a male significantly
+increases the odds of purchasing of a SUV.
+
+Part G
+
+Calculate the estimated odds ratio for two people, one with an age of 40
+and the other a 52 year old, controlling for salary and gender.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OR2 }\OtherTok{\textless{}{-}}\NormalTok{ model1SUV}\SpecialCharTok{$}\NormalTok{coefficients[[}\StringTok{"AGE"}\NormalTok{]]}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{exp}\NormalTok{(}\DecValTok{12}\SpecialCharTok{*}\NormalTok{OR2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 17.17806
+\end{verbatim}
+
+\({{\widehat{OR}}_{\left( \text{AGE=52 }-\text{ AGE=40 = 12  }\text{  | } \text{  GEN, SAL} \right)}}={{e}^{12{{\beta }_{2}}}}={{e}^{12\left( 0.2370 \right)}}\approx 17.178\)
+
+Part H
+
+Fit a logistic model that regresses SUV on the predictors AGE, SAL, GEN
+and the interaction term between AGE and GEN.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model3SUV }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(SUV }\SpecialCharTok{\textasciitilde{}}\NormalTok{ GEN }\SpecialCharTok{+}\NormalTok{ AGE }\SpecialCharTok{+}\NormalTok{ SAL }\SpecialCharTok{+}\NormalTok{ GEN}\SpecialCharTok{:}\NormalTok{AGE, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ SUV)}
+
+\FunctionTok{summary}\NormalTok{(model3SUV)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = SUV ~ GEN + AGE + SAL + GEN:AGE, family = "binomial", 
+##     data = SUV)
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -1.213e+01  1.525e+00  -7.951 1.84e-15 ***
+## GEN         -1.214e+00  1.877e+00  -0.647    0.518    
+## AGE          2.210e-01  3.150e-02   7.017 2.26e-12 ***
+## SAL          3.647e-05  5.473e-06   6.664 2.66e-11 ***
+## GEN:AGE      3.835e-02  4.593e-02   0.835    0.404    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 521.57  on 399  degrees of freedom
+## Residual deviance: 275.14  on 395  degrees of freedom
+## AIC: 285.14
+## 
+## Number of Fisher Scoring iterations: 6
+\end{verbatim}
+
+\(\operatorname{logit}\left[ \widehat{\text{pr}}\left( Y=1 \right) \right]=-12.13-1.214\left( \text{GEN} \right)+0.2210\left( \text{AGE} \right)+0.00004\left( \text{SAL} \right)+0.0384\left( \text{GEN:AGE} \right)\)
+
+Part I
+
+Using the model from (H), compute the 95\% confidence interval for the
+estimated adjusted odds ratio for the effect of gender, controlling for
+AGE and SAL when a person is 25 years old.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{round}\NormalTok{(}\FunctionTok{vcov}\NormalTok{(model3SUV),}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             (Intercept)     GEN     AGE SAL GEN:AGE
+## (Intercept)      2.3269 -1.4022 -0.0462   0  0.0321
+## GEN             -1.4022  3.5235  0.0332   0 -0.0851
+## AGE             -0.0462  0.0332  0.0010   0 -0.0008
+## SAL              0.0000  0.0000  0.0000   0  0.0000
+## GEN:AGE          0.0321 -0.0851 -0.0008   0  0.0021
+\end{verbatim}
+
+\(\exp \left[ {{{\hat{\beta }}}_{1}}+{{{\hat{\beta }}}_{4}}\left( \text{AGE} \right)\pm 1.960\left( {{\left( \text{GEN} \right)}^{2}}\cdot \widehat{\text{Var}}\left( {{{\hat{\beta }}}_{1}} \right)+{{\left( \text{AGE} \right)}^{2}}\cdot \widehat{\text{Var}}\left( {{{\hat{\beta }}}_{4}} \right)+2\left( \text{GEN} \right)\left( \text{AGE} \right)\cdot \widehat{\text{Cov}}\left( {{{\hat{\beta }}}_{1}},{{{\hat{\beta }}}_{4}} \right) \right) \right]\)
+
+\(=\exp \left[ -1.214+0.0384\left( 25 \right)\pm 1.960\left( {{\left( 1 \right)}^{2}}\cdot {{\left( 1.877 \right)}^{2}}+{{\left( 25 \right)}^{2}}\cdot {{\left( 0.0459 \right)}^{2}}+2\left( 1 \right)\left( 25 \right)\left( -0.0851 \right) \right) \right]\)
+
+\(=\exp \left[ -0.254\pm 1.146 \right]\)
+
+\(=\left( {{e}^{-0.254-1.146}},{{e}^{-0.254+1.146}} \right)\)
+
+\(=\left( 0.247,2.441 \right)\)
+
+Part J
+
+What does the confidence interval in part (I) tell you?
+
+We are 95\% confident that the odds of purchasing a SUV for 25 years old
+males are between 0.247 and 2.441 times greater than the corresponding
+odds for 25 year old females, when controlling for the effects of age
+and annual salary.
+
+Since 1 is contained in the interval, there isn't sufficient evidence
+that the odds of purchasing a SUV differs for 25 year old males and
+females.
+
+\end{document}

@@ -1,0 +1,94 @@
+---
+title: "souprbowl"
+author: "Gao"
+date: "2024-02-09"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(epiDisplay)
+library(tidyverse)
+```
+
+```{r}
+round(ppois(0:10, 33/18, lower.tail = TRUE), 5)
+
+round(ppois(0:10, 33/18, lower.tail = FALSE), 5)
+
+purdy_probdistn <- round(dpois(0:20, 33/18), 5)
+
+purdy_probdistn
+
+purdy <- c(0:20)
+
+purdy_results <- sample(purdy, 100, replace = TRUE, prob = c(purdy_probdistn))
+
+hist(purdy_results)
+
+tab1(purdy_results)
+```
+
+```{r}
+round(ppois(0:10, 33/18, lower.tail = TRUE), 5)
+
+round(ppois(0:10, 33/18, lower.tail = FALSE), 5)
+
+mahomes_probdistn <- round(dpois(0:20, 33/18), 5)
+
+mahomes_probdistn
+
+mahomes <- c(0:20)
+
+mahomes_results <- sample(purdy, 100, replace = TRUE, prob = c(purdy_probdistn))
+
+hist(mahomes_results)
+
+tab1(mahomes_results)
+```
+
+E(Points-SanFran49ers) = 28.53
+
+E(Points-KCChiefs) = 21.14
+
+```{r}
+chiefs_rushingTD_probdistn <- round(dpois(0:10, 12/20), 5)
+
+chiefs_rushingTD_probdistn
+
+chiefs_rushingTD <- c(0:10)
+
+chiefs_rushingTD_results <- sample(chiefs_rushingTD, 1000, replace = TRUE, prob=c(chiefs_rushingTD_probdistn))
+
+tab1(chiefs_rushingTD_results)
+```
+
+```{r}
+SF_rushingTD_probdistn <- round(dpois(0:10, 32/19), 5)
+
+SF_rushingTD_probdistn
+
+SF_rushingTD <- c(0:10)
+
+SF_rushingTD_results <- sample(SF_rushingTD, 1000, replace = TRUE, prob=c(SF_rushingTD_probdistn))
+
+tab1(SF_rushingTD_results)
+```
+
+```{r}
+SF_Safety_probdistn <- round(dpois(0:10, 1/19), 5)
+
+SF_Safety_probdistn
+
+SF_Safety <- c(0:10)
+
+SF_Safety_results <- sample(SF_Safety, 1000, replace = TRUE, prob=c(SF_Safety_probdistn))
+
+tab1(SF_Safety_results)
+```
+

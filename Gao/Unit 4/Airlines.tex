@@ -1,0 +1,793 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Airlines},
+  pdfauthor={Gao},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Airlines}
+\author{Gao}
+\date{2024-02-02}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.5
+## v forcats   1.0.0     v stringr   1.5.1
+## v ggplot2   3.4.4     v tibble    3.2.1
+## v lubridate 1.9.3     v tidyr     1.3.0
+## v purrr     1.0.2     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(fastDummies)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Thank you for using fastDummies!
+## To acknowledge our work, please cite the package:
+## Kaplan, J. & Schlegel, B. (2023). fastDummies: Fast Creation of Dummy (Binary) Columns and Rows from Categorical Variables. Version 1.7.1. URL: https://github.com/jacobkap/fastDummies, https://jacobkap.github.io/fastDummies/.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Airlines }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"Airline.csv"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{as\_tibble}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 129880 Columns: 9
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## chr (5): satisfaction, Gender, CustomerType, TypeofTravel, Class
+## dbl (4): Age, FlightDistance, DepartureDelayinMinutes, ArrivalDelayinMinutes
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(Airlines)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  satisfaction          Gender          CustomerType            Age       
+##  Length:129880      Length:129880      Length:129880      Min.   : 7.00  
+##  Class :character   Class :character   Class :character   1st Qu.:27.00  
+##  Mode  :character   Mode  :character   Mode  :character   Median :40.00  
+##                                                           Mean   :39.43  
+##                                                           3rd Qu.:51.00  
+##                                                           Max.   :85.00  
+##                                                                          
+##  TypeofTravel          Class           FlightDistance DepartureDelayinMinutes
+##  Length:129880      Length:129880      Min.   :  50   Min.   :   0.00        
+##  Class :character   Class :character   1st Qu.:1359   1st Qu.:   0.00        
+##  Mode  :character   Mode  :character   Median :1925   Median :   0.00        
+##                                        Mean   :1981   Mean   :  14.71        
+##                                        3rd Qu.:2544   3rd Qu.:  12.00        
+##                                        Max.   :6951   Max.   :1592.00        
+##                                                                              
+##  ArrivalDelayinMinutes
+##  Min.   :   0.00      
+##  1st Qu.:   0.00      
+##  Median :   0.00      
+##  Mean   :  15.09      
+##  3rd Qu.:  13.00      
+##  Max.   :1584.00      
+##  NA's   :393
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(Airlines)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 129,880 x 9
+##    satisfaction Gender CustomerType       Age TypeofTravel  Class FlightDistance
+##    <chr>        <chr>  <chr>            <dbl> <chr>         <chr>          <dbl>
+##  1 dissatisfied Female LoyalCustomer       47 PersonalTrav~ Eco             3113
+##  2 satisfied    Male   LoyalCustomer       32 Businesstrav~ Busi~           4425
+##  3 dissatisfied Male   LoyalCustomer        8 PersonalTrav~ Eco             3017
+##  4 satisfied    Male   LoyalCustomer       49 Businesstrav~ Busi~           3792
+##  5 dissatisfied Male   LoyalCustomer       30 PersonalTrav~ Eco             3468
+##  6 dissatisfied Female LoyalCustomer       53 Businesstrav~ Busi~           4198
+##  7 dissatisfied Female LoyalCustomer       39 Businesstrav~ Busi~           3549
+##  8 dissatisfied Male   disloyalCustomer    43 Businesstrav~ Busi~           2478
+##  9 satisfied    Male   LoyalCustomer       47 Businesstrav~ Busi~           3835
+## 10 satisfied    Male   LoyalCustomer       27 Businesstrav~ Busi~           3623
+## # i 129,870 more rows
+## # i 2 more variables: DepartureDelayinMinutes <dbl>,
+## #   ArrivalDelayinMinutes <dbl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Airlines }\OtherTok{\textless{}{-}} \FunctionTok{dummy\_cols}\NormalTok{(Airlines, }\AttributeTok{select\_columns =} \StringTok{"satisfaction"}\NormalTok{, }\AttributeTok{remove\_first\_dummy =} \ConstantTok{TRUE}\NormalTok{)}
+
+\NormalTok{Airlines }\OtherTok{\textless{}{-}} \FunctionTok{dummy\_cols}\NormalTok{(Airlines, }\AttributeTok{select\_columns =} \StringTok{"Gender"}\NormalTok{, }\AttributeTok{remove\_first\_dummy =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{Airlines }\OtherTok{\textless{}{-}} \FunctionTok{dummy\_cols}\NormalTok{(Airlines, }\AttributeTok{select\_columns =} \StringTok{"CustomerType"}\NormalTok{, }\AttributeTok{remove\_first\_dummy =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{Airlines }\OtherTok{\textless{}{-}} \FunctionTok{dummy\_cols}\NormalTok{(Airlines, }\AttributeTok{select\_columns =} \StringTok{"TypeofTravel"}\NormalTok{, }\AttributeTok{remove\_first\_dummy =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{Airlines }\OtherTok{\textless{}{-}} \FunctionTok{dummy\_cols}\NormalTok{(Airlines, }\AttributeTok{select\_columns =} \StringTok{"Class"}\NormalTok{, }\AttributeTok{remove\_first\_dummy =} \ConstantTok{TRUE}\NormalTok{)}
+
+\NormalTok{Airlines}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 129,880 x 15
+##    satisfaction Gender CustomerType       Age TypeofTravel  Class FlightDistance
+##    <chr>        <chr>  <chr>            <dbl> <chr>         <chr>          <dbl>
+##  1 dissatisfied Female LoyalCustomer       47 PersonalTrav~ Eco             3113
+##  2 satisfied    Male   LoyalCustomer       32 Businesstrav~ Busi~           4425
+##  3 dissatisfied Male   LoyalCustomer        8 PersonalTrav~ Eco             3017
+##  4 satisfied    Male   LoyalCustomer       49 Businesstrav~ Busi~           3792
+##  5 dissatisfied Male   LoyalCustomer       30 PersonalTrav~ Eco             3468
+##  6 dissatisfied Female LoyalCustomer       53 Businesstrav~ Busi~           4198
+##  7 dissatisfied Female LoyalCustomer       39 Businesstrav~ Busi~           3549
+##  8 dissatisfied Male   disloyalCustomer    43 Businesstrav~ Busi~           2478
+##  9 satisfied    Male   LoyalCustomer       47 Businesstrav~ Busi~           3835
+## 10 satisfied    Male   LoyalCustomer       27 Businesstrav~ Busi~           3623
+## # i 129,870 more rows
+## # i 8 more variables: DepartureDelayinMinutes <dbl>,
+## #   ArrivalDelayinMinutes <dbl>, satisfaction_satisfied <int>,
+## #   Gender_Male <int>, CustomerType_LoyalCustomer <int>,
+## #   TypeofTravel_PersonalTravel <int>, Class_Eco <int>, Class_EcoPlus <int>
+\end{verbatim}
+
+\newpage
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Fit your model.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1 }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(satisfaction\_satisfied }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Age }\SpecialCharTok{+}\NormalTok{ Gender\_Male }\SpecialCharTok{+}\NormalTok{ FlightDistance }\SpecialCharTok{+}\NormalTok{ ArrivalDelayinMinutes }\SpecialCharTok{+}\NormalTok{ Class\_Eco }\SpecialCharTok{+}\NormalTok{ Class\_EcoPlus }\SpecialCharTok{+}\NormalTok{ CustomerType\_LoyalCustomer }\SpecialCharTok{+}\NormalTok{ TypeofTravel\_PersonalTravel, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ Airlines)}
+\FunctionTok{summary}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = satisfaction_satisfied ~ Age + Gender_Male + FlightDistance + 
+##     ArrivalDelayinMinutes + Class_Eco + Class_EcoPlus + CustomerType_LoyalCustomer + 
+##     TypeofTravel_PersonalTravel, family = "binomial", data = Airlines)
+## 
+## Coefficients:
+##                               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)                  4.083e-01  2.959e-02  13.799  < 2e-16 ***
+## Age                         -2.985e-03  4.538e-04  -6.579 4.74e-11 ***
+## Gender_Male                 -1.095e+00  1.320e-02 -82.962  < 2e-16 ***
+## FlightDistance              -1.284e-04  6.803e-06 -18.872  < 2e-16 ***
+## ArrivalDelayinMinutes       -5.039e-03  1.833e-04 -27.486  < 2e-16 ***
+## Class_Eco                   -1.303e+00  1.695e-02 -76.889  < 2e-16 ***
+## Class_EcoPlus               -1.415e+00  2.553e-02 -55.429  < 2e-16 ***
+## CustomerType_LoyalCustomer   1.924e+00  1.989e-02  96.750  < 2e-16 ***
+## TypeofTravel_PersonalTravel -2.753e-01  1.764e-02 -15.608  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 178341  on 129486  degrees of freedom
+## Residual deviance: 145667  on 129478  degrees of freedom
+##   (393 observations deleted due to missingness)
+## AIC: 145685
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:  glm(formula = satisfaction_satisfied ~ Age + Gender_Male + FlightDistance + 
+##     ArrivalDelayinMinutes + Class_Eco + Class_EcoPlus + CustomerType_LoyalCustomer + 
+##     TypeofTravel_PersonalTravel, family = "binomial", data = Airlines)
+## 
+## Coefficients:
+##                 (Intercept)                          Age  
+##                   0.4083332                   -0.0029852  
+##                 Gender_Male               FlightDistance  
+##                  -1.0953468                   -0.0001284  
+##       ArrivalDelayinMinutes                    Class_Eco  
+##                  -0.0050386                   -1.3029748  
+##               Class_EcoPlus   CustomerType_LoyalCustomer  
+##                  -1.4153322                    1.9241037  
+## TypeofTravel_PersonalTravel  
+##                  -0.2753098  
+## 
+## Degrees of Freedom: 129486 Total (i.e. Null);  129478 Residual
+##   (393 observations deleted due to missingness)
+## Null Deviance:       178300 
+## Residual Deviance: 145700    AIC: 145700
+\end{verbatim}
+
+\(\operatorname{logit}\left[ \widehat{\text{pr}}\left( Y=1 \right) \right]=0.4083332-1.0953468\left( \text{Gender} \right)-0.0029852\left( \text{Age} \right)-0.0050386\left( \text{ArrivalDelay} \right)-0.0001284\left( \text{FlightDistance} \right)-1.3029748\left( \text{ClassEco} \right)-1.4153322\left( \text{ClassEcoPlus} \right)+1.9241037\left( \text{LoyalCustomer} \right)-0.2753098\left( \text{PersonalTravel} \right)\)
+
+\newpage
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Compute and interpret the estimate odds ratio for an airline
+  passenger's satisfaction who are male and those who are female,
+  controlling for age, flight distance, arrival delay and the other
+  independent variables that you added to your model.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OR }\OtherTok{\textless{}{-}}\NormalTok{ model1}\SpecialCharTok{$}\NormalTok{coefficients[[}\StringTok{"Gender\_Male"}\NormalTok{]]}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{exp}\NormalTok{(OR))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3344236
+\end{verbatim}
+
+The estimated odds of a male being satisfied with a flight is 0.3344
+times that of a female.
+
+\newpage
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Construct and interpret a 98\% confidence interval for the estimate
+  odds ratio in question 2.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta1 }\OtherTok{\textless{}{-}}\NormalTok{ model1}\SpecialCharTok{$}\NormalTok{coefficients[[}\StringTok{"Gender\_Male"}\NormalTok{]]}
+\FunctionTok{print}\NormalTok{(beta1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -1.095347
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{zcrit }\OtherTok{\textless{}{-}} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.99}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(zcrit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.326348
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stddevbeta1 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(}\FunctionTok{summary}\NormalTok{(model1))[}\DecValTok{2}\NormalTok{, }\StringTok{"Std. Error"}\NormalTok{]}
+\FunctionTok{print}\NormalTok{(stddevbeta1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.0004537528
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lb }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(beta1 }\SpecialCharTok{{-}}\NormalTok{ zcrit}\SpecialCharTok{*}\NormalTok{stddevbeta1)}
+\NormalTok{ub }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(beta1 }\SpecialCharTok{+}\NormalTok{ zcrit}\SpecialCharTok{*}\NormalTok{stddevbeta1)}
+
+\FunctionTok{print}\NormalTok{(lb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3340708
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(ub)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3347768
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"The 98\% confidence interval for the estimate odds ratio in part (B) is ("}\NormalTok{, }\FunctionTok{round}\NormalTok{(lb, }\DecValTok{4}\NormalTok{), }\StringTok{", "}\NormalTok{, }\FunctionTok{round}\NormalTok{(ub, }\DecValTok{4}\NormalTok{), }\StringTok{")"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "The 98% confidence interval for the estimate odds ratio in part (B) is (0.3341, 0.3348)"
+\end{verbatim}
+
+This means that we are 98\% confident that the odds ratio lies between
+0.3341 and 0.3348. Since 1 is not included in this range, we can say
+that we are 98\% confident that being male plays a factor in customer
+ratings.
+
+\newpage
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Test the null hypothesis that the adjusted odds ratio from question 2
+  equals 1. Use the Wald test.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lmtest)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: zoo
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{waldtest}\NormalTok{(model1, }\AttributeTok{test=}\StringTok{"Chisq"}\NormalTok{, }\AttributeTok{terms=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Wald test
+## 
+## Model 1: satisfaction_satisfied ~ Age + Gender_Male + FlightDistance + 
+##     ArrivalDelayinMinutes + Class_Eco + Class_EcoPlus + CustomerType_LoyalCustomer + 
+##     TypeofTravel_PersonalTravel
+## Model 2: satisfaction_satisfied ~ Age + FlightDistance + ArrivalDelayinMinutes + 
+##     Class_Eco + Class_EcoPlus + CustomerType_LoyalCustomer + 
+##     TypeofTravel_PersonalTravel
+##   Res.Df Df  Chisq Pr(>Chisq)    
+## 1 129478                         
+## 2 129479 -1 6882.7  < 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\(\text{H}_{0}: \beta_{1} = 0\)
+
+\(\text{H}_{a}: \beta_{1} \ne 0\)
+
+\(\text{T.S.: } \chi^2 = 6882.7\)
+
+\(\text{p-value: } P(\chi^2 \ge 1.196) \approx 2.2 * 10^{-16}\)
+
+Conclusion: Since the p-value \textless{} \(\alpha\), we reject
+\(\text{H}_{0}\). At the \(\alpha\) = 0.05 significance level there is
+sufficient evidence to indicate that being male plays a factor in
+customer satisfaction
+
+\newpage
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Test the null hypothesis that the adjusted odds ratio from question 2
+  equals 1. Use the LR test.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1 }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(satisfaction\_satisfied }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Age }\SpecialCharTok{+}\NormalTok{ Gender\_Male }\SpecialCharTok{+}\NormalTok{ FlightDistance }\SpecialCharTok{+}\NormalTok{ ArrivalDelayinMinutes }\SpecialCharTok{+}\NormalTok{ Class\_Eco }\SpecialCharTok{+}\NormalTok{ Class\_EcoPlus }\SpecialCharTok{+}\NormalTok{ CustomerType\_LoyalCustomer }\SpecialCharTok{+}\NormalTok{ TypeofTravel\_PersonalTravel, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ Airlines)}
+
+\FunctionTok{summary}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = satisfaction_satisfied ~ Age + Gender_Male + FlightDistance + 
+##     ArrivalDelayinMinutes + Class_Eco + Class_EcoPlus + CustomerType_LoyalCustomer + 
+##     TypeofTravel_PersonalTravel, family = "binomial", data = Airlines)
+## 
+## Coefficients:
+##                               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)                  4.083e-01  2.959e-02  13.799  < 2e-16 ***
+## Age                         -2.985e-03  4.538e-04  -6.579 4.74e-11 ***
+## Gender_Male                 -1.095e+00  1.320e-02 -82.962  < 2e-16 ***
+## FlightDistance              -1.284e-04  6.803e-06 -18.872  < 2e-16 ***
+## ArrivalDelayinMinutes       -5.039e-03  1.833e-04 -27.486  < 2e-16 ***
+## Class_Eco                   -1.303e+00  1.695e-02 -76.889  < 2e-16 ***
+## Class_EcoPlus               -1.415e+00  2.553e-02 -55.429  < 2e-16 ***
+## CustomerType_LoyalCustomer   1.924e+00  1.989e-02  96.750  < 2e-16 ***
+## TypeofTravel_PersonalTravel -2.753e-01  1.764e-02 -15.608  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 178341  on 129486  degrees of freedom
+## Residual deviance: 145667  on 129478  degrees of freedom
+##   (393 observations deleted due to missingness)
+## AIC: 145685
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model2 }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(satisfaction\_satisfied }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Age }\SpecialCharTok{+}\NormalTok{ FlightDistance }\SpecialCharTok{+}\NormalTok{ ArrivalDelayinMinutes }\SpecialCharTok{+}\NormalTok{ Class\_Eco }\SpecialCharTok{+}\NormalTok{ Class\_EcoPlus }\SpecialCharTok{+}\NormalTok{ CustomerType\_LoyalCustomer }\SpecialCharTok{+}\NormalTok{ TypeofTravel\_PersonalTravel, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ Airlines)}
+
+\FunctionTok{summary}\NormalTok{(model2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = satisfaction_satisfied ~ Age + FlightDistance + 
+##     ArrivalDelayinMinutes + Class_Eco + Class_EcoPlus + CustomerType_LoyalCustomer + 
+##     TypeofTravel_PersonalTravel, family = "binomial", data = Airlines)
+## 
+## Coefficients:
+##                               Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)                  1.508e-01  2.857e-02   5.279  1.3e-07 ***
+## Age                         -4.531e-03  4.375e-04 -10.357  < 2e-16 ***
+## FlightDistance              -2.107e-04  6.566e-06 -32.096  < 2e-16 ***
+## ArrivalDelayinMinutes       -4.444e-03  1.774e-04 -25.057  < 2e-16 ***
+## Class_Eco                   -1.261e+00  1.647e-02 -76.589  < 2e-16 ***
+## Class_EcoPlus               -1.357e+00  2.477e-02 -54.789  < 2e-16 ***
+## CustomerType_LoyalCustomer   1.797e+00  1.919e-02  93.603  < 2e-16 ***
+## TypeofTravel_PersonalTravel -2.681e-01  1.705e-02 -15.722  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 178341  on 129486  degrees of freedom
+## Residual deviance: 152934  on 129479  degrees of freedom
+##   (393 observations deleted due to missingness)
+## AIC: 152950
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{152934{-}145667}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7267
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{1}\SpecialCharTok{{-}}\FunctionTok{pchisq}\NormalTok{(}\DecValTok{7267}\NormalTok{,}\AttributeTok{df=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\(\text{H}_{0}: \beta_{1} = 0\)
+
+\(\text{H}_{a}: \beta_{1} \ne 0\)
+
+\(\text{T.S.: } \text{LR}=-2\log {{\hat{L}}_{R}}-\left( -2\log {{{\hat{L}}}_{C}} \right)=152934-145667=7267\)
+
+\(\text{p-value: } P(\chi^2 \ge 1.21) \approx 0\)
+
+Conclusion: Since the p-value \textless\textless\textless{} \(\alpha\),
+we reject \(\text{H}_{0}\). At the \(\alpha\) = 0.05 significance level
+there is sufficient evidence to indicate that being male plays a factor
+in customer satisfaction
+
+\newpage
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Calculate and interpret the estimated odds ratio for two people, one
+  with an age of 18 and the other a 51 years old, controlling for
+  gender, flight distance, arrival delay and the other independent
+  variables you added to your model.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OR2 }\OtherTok{\textless{}{-}}\NormalTok{ model1}\SpecialCharTok{$}\NormalTok{coefficients[[}\StringTok{"Age"}\NormalTok{]]}
+\NormalTok{OR2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.002985155
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{exp}\NormalTok{(}\DecValTok{33}\SpecialCharTok{*}\NormalTok{OR2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9061865
+\end{verbatim}
+
+\({{\widehat{OR}}_{\left( \text{AGE=51 }-\text{ AGE=18 = 33  }\text{  | } \text{  GEN, SAL} \right)}}={{e}^{33{{\beta }_{2}}}}={{e}^{33\left( -0.0030 \right)}}\approx 0.906\)
+
+Someone who is 51 years old is 0.906 times more likely to give a postive
+review than someone who is 18 years old.
+
+\newpage
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Fit a logistic model that regresses satisfaction on the predictors
+  gender, age, arrival delay and the interaction term between gender and
+  age.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model3 }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(satisfaction\_satisfied }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Age }\SpecialCharTok{+}\NormalTok{ Gender\_Male }\SpecialCharTok{+}\NormalTok{ ArrivalDelayinMinutes }\SpecialCharTok{+}\NormalTok{ Gender\_Male}\SpecialCharTok{:}\NormalTok{Age, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ Airlines)}
+\FunctionTok{summary}\NormalTok{(model3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = satisfaction_satisfied ~ Age + Gender_Male + ArrivalDelayinMinutes + 
+##     Gender_Male:Age, family = "binomial", data = Airlines)
+## 
+## Coefficients:
+##                         Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)            0.0706590  0.0227711   3.103  0.00192 ** 
+## Age                    0.0162457  0.0005520  29.431  < 2e-16 ***
+## Gender_Male           -0.9377696  0.0323506 -28.988  < 2e-16 ***
+## ArrivalDelayinMinutes -0.0048076  0.0001687 -28.505  < 2e-16 ***
+## Age:Gender_Male        0.0012368  0.0007727   1.601  0.10948    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 178341  on 129486  degrees of freedom
+## Residual deviance: 169612  on 129482  degrees of freedom
+##   (393 observations deleted due to missingness)
+## AIC: 169622
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:  glm(formula = satisfaction_satisfied ~ Age + Gender_Male + ArrivalDelayinMinutes + 
+##     Gender_Male:Age, family = "binomial", data = Airlines)
+## 
+## Coefficients:
+##           (Intercept)                    Age            Gender_Male  
+##              0.070659               0.016246              -0.937770  
+## ArrivalDelayinMinutes        Age:Gender_Male  
+##             -0.004808               0.001237  
+## 
+## Degrees of Freedom: 129486 Total (i.e. Null);  129482 Residual
+##   (393 observations deleted due to missingness)
+## Null Deviance:       178300 
+## Residual Deviance: 169600    AIC: 169600
+\end{verbatim}
+
+\(\operatorname{logit}\left[ \widehat{\text{pr}}\left( Y=1 \right) \right]=0.070659-0.937770\left( \text{Gender} \right)-0.016246\left( \text{Age} \right)-0.004808\left( \text{ArrivalDelay} \right)+0.001237\left( \text{Gender:Age} \right)\)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  Using the model from question 7, compute and interpret the 92\%
+  confidence interval for the estimated adjusted odds ratio for the
+  effect of gender, controlling for age and arrival delay when a person
+  is 40 years old.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vcov}\NormalTok{(model3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                         (Intercept)           Age   Gender_Male
+## (Intercept)            5.185220e-04 -1.161985e-05 -5.132630e-04
+## Age                   -1.161985e-05  3.046951e-07  1.163231e-05
+## Gender_Male           -5.132630e-04  1.163231e-05  1.046565e-03
+## ArrivalDelayinMinutes -4.070400e-07 -9.644501e-10  3.950567e-08
+## Age:Gender_Male        1.162422e-05 -3.046848e-07 -2.333959e-05
+##                       ArrivalDelayinMinutes Age:Gender_Male
+## (Intercept)                   -4.070400e-07    1.162422e-05
+## Age                           -9.644501e-10   -3.046848e-07
+## Gender_Male                    3.950567e-08   -2.333959e-05
+## ArrivalDelayinMinutes          2.844631e-08    6.591484e-10
+## Age:Gender_Male                6.591484e-10    5.970795e-07
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.96}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.750686
+\end{verbatim}
+
+\(\exp \left[ {{{\hat{\beta }}}_{1}}+{{{\hat{\beta }}}_{4}}\left( \text{Gender} \right)\pm 1.751\left( {{\left( \text{Gender} \right)}^{2}}\cdot \widehat{\text{Var}}\left( {{{\hat{\beta }}}_{1}} \right)+{{\left( \text{Age} \right)}^{2}}\cdot \widehat{\text{Var}}\left( {{{\hat{\beta }}}_{4}} \right)+2\left( \text{Gender} \right)\left( \text{Age} \right)\cdot \widehat{\text{Cov}}\left( {{{\hat{\beta }}}_{1}},{{{\hat{\beta }}}_{4}} \right) \right) \right]\)
+
+\(=\exp \left[ -0.937770+0.001237\left( 40 \right)\pm 1.751\left( {{\left( 1 \right)}^{2}}\cdot {{\left( 3.046951*10^{-7} \right)}}+{{\left( 40 \right)}^{2}}\cdot {{\left( 5.970795*10^{-7} \right)}}+2\left( 1 \right)\left( 40 \right)\left( -3.046848*10^{-7} \right) \right) \right]\)
+
+\(=\exp \left[ -0.88829\pm 0.00163063 \right]\)
+
+\(=\left( {{e}^{-0.88829-0.00163063}},{{e}^{-0.88829+0.00163063}} \right)\)
+
+\(=\left( 0.411,0.412 \right)\)
+
+\end{document}

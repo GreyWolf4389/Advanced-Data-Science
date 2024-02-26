@@ -1,0 +1,149 @@
+---
+title: "SUV"
+author: "Worcester"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)          
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+library(lmtest)
+```
+
+```{r}
+SUV <- read_csv("SUV.csv") %>% as_tibble()
+summary(SUV)
+SUV
+```
+
+#Question 1
+
+#Can you predict whether or not a person purchases a SUV (1 = purchased a SUV, 0 = did not purchase a SUV) based on their age (AGE), annual salary (SAL) and gender (GEN) (Male = 1, Female = 0).
+
+#Part A
+
+#Fit the logistic regression model that regresses SUV on the predictors AGE, SAL and GEN.
+
+```{r}
+model1 <- glm(SUV ~ GEN + SAL + AGE, family = "binomial",  data = SUV)
+summary(model1)
+model1
+```
+
+SUV = -1.278 + 3.38 * 10 ^ -1 * GENERATION + 3.644 * 10 ^ -5 * SALARY + 2.370 * 10 ^ -1 * AGE
+
+#Part B
+
+#Compute the estimate odds ratio for purchasing a SUV for persons who are male and those who are female, controlling for age and salary.
+
+```{r}
+exp(3.338*10^-1)
+```
+
+#Part C
+
+#Interpret your answer in part (B) in the context of the problem.
+
+It is the odds ratio of a dude getting a SUV versus a girl getting a SUV. Someone who is Male is 1.4 times more likely to get an SUV than someone who is Female.
+
+#Part D
+
+#Construct a 95% confidence interval for the estimate odds ratio in part (B).
+
+```{r}
+qnorm(0.975)
+exp(3.338*10^-1 + 1.959964 * 3.052*10^-1)
+exp(3.338*10^-1 - 1.959964 * 3.052*10^-1)
+```
+
+(0.767681, 2.539535)
+
+There is a 95% certainty that the odds ratio between a guy getting an SUV and a girl getting a SUV lies between 0.767681 and 2.539535
+
+#Part E
+
+#Test the null hypothesis that the adjusted odds ratio from part (B) equals 1.  Use the Wald test.
+
+The null hypothesis is that there is no statistically significant difference between the chance of a guy buying a SUV and a girl buying a SUV.
+
+```{r}
+waldtest(model1, test="Chisq", terms = 1)
+```
+
+Since the p-value, 0.2741, exceeds the alpha value of 0.05, we fail to reject the HO!!! Our confidence interval has insufficient evidence to determine that there is a difference in the probability of purchasing an SUV depending on if the buyer is a male of female.
+
+#Part F
+
+#Test the null hypothesis that the adjusted odds ratio from part (B) equals 1.  Use the LR test.
+
+```{r}
+model2 <- glm(SUV ~ SAL + AGE, family = "binomial",  data = SUV)
+summary(model2)
+model2
+
+277.05-275.84
+
+1-pchisq(1.21, df=1)
+
+```
+
+Since the p-value, 1.21, exceeds the alpha value, we once again fail to reject the HO!!! Our confidence interval has insufficient evidence to determine that there is a difference in the probability of purchasing an SUV depending on if the buyer is a male of female.
+
+#Part G
+
+#Calculate the estimated odds ratio for two people, one with an age of 40 and the other a 52 year old, controlling for salary and gender.
+
+```{r}
+exp(12*2.370*10^-1)
+```
+
+#Part H
+
+#Fit a logistic model that regresses SUV on the predictors AGE, SAL, GEN and the interaction term between AGE and GEN.
+
+```{r}
+model3 <- glm(SUV ~ GEN + SAL + AGE + AGE:GEN, family = "binomial",  data = SUV)
+summary(model3)
+model3
+```
+
+SUV = -12.13 - 1.214 * Generation + 3.657 * 10 ^ -5 * Salary + 2.21 * 10 ^ -1 * Age + 3.835 * 10 ^ -2 * Gen:Age
+
+#Part I
+
+#Using the model from (H), compute the 95% confidence interval for the estimated adjusted odds ratio for the effect of gender, controlling for AGE and SAL when a person is 25 years old.
+
+```{r}
+round(vcov(model3), 3)
+
+1.877^2 + 25^2*(4.593 * 10 ^ -2) + 2 * 1.877 * (-0.085)
+
+exp(-1.214 + 25*3.84*10^-2 + 1.96 * (1.877^2 + 25^2 * 0.0459^2 + 2*25*(-0.0851)))
+exp(-1.214 + 25*3.84*10^-2 - 1.96 * (1.877^2 + 25^2 * 0.0459^2 + 2*25*(-0.0851)))
+```
+
+We are 95% confident that the actual odds ratio lies between 0.2465045 and 2.44092. 
+
+#Part J
+
+#What does the confidence interval in part (I) tell you?
+
+There is a 95% certainty that the odds ratio lies within the interval. Since the interval includes 1, it means that there is a chance that there is no difference in SUV purchasing between genders when all other variables are controlled for.

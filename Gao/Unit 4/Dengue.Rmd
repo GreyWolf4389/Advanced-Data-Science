@@ -1,0 +1,72 @@
+---
+title: "Dengue"
+author: "Gao"
+date: "2024-01-10"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)          
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+library(lmtest)
+```
+
+```{r}
+denji <- read_csv("dengue.csv") %>% as_tibble()
+summary(denji)
+denji
+```
+
+```{r}
+modelDen <- glm(DENGUE ~ MOSNET + AGE + SECTOR1 + SECTOR2 + SECTOR3 + SECTOR4, family = "binomial",  data = denji)
+summary(modelDen)
+modelDen
+```
+
+```{r}
+qnorm(.025)
+qnorm(.975)
+```
+
+```{r}
+waldtest(model1, test="Chisq", terms = 1)
+```
+
+```{r}
+modelDen2 <- glm(DENGUE ~ AGE + SECTOR1 + SECTOR2 + SECTOR3 + SECTOR4, family = "binomial",  data = denji)
+summary(modelDen2)
+modelDen2
+```
+
+```{r}
+pchisq(0.07, df=1, lower.tail=FALSE)
+pchisq(0.07, def=1)
+```
+
+```{r}
+modelDen3 <- glm(DENGUE ~ MOSNET + AGE + SECTOR1 + SECTOR2 + SECTOR3 + SECTOR4 + MOSNET:AGE, family = "binomial",  data = denji)
+summary(modelDen3)
+modelDen3
+```
+
+```{r}
+round(vcov(modelDen3), 3)
+```
+

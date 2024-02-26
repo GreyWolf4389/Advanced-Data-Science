@@ -1,0 +1,40 @@
+---
+title: "Throws"
+author: "Gao"
+date: "2024-01-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)          
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+library(lmtest)
+```
+
+```{r}
+Throws <- read_csv("Free_Throws.csv") %>% as_tibble()
+summary(Throws)
+Throws
+
+
+```
+
+```{r}
+
+```
+

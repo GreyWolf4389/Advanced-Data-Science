@@ -1,0 +1,111 @@
+---
+title: "Horseshoe_Crabs"
+author: "Worcester"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(fastDummies)
+```
+
+This problem refers to data from a study of nesting horseshoe crabs.
+
+Each female horseshoe crab in the study had a male crab attached to her in her nest.  The study investigated factors that affect whether the female crab had any other males, called satellites, residing near her.  Explanatory variables that are thought to affect this included the female crab's color (1 = lightest in color to 5 = darkest in color), spine condition, carapace width (in centimeters), and weight.  The response outcome for each female crab is the number of satellites. There are 173 females in this study.
+
+```{r}
+Crab <- read_csv("Horseshoe_Crabs.csv") %>% as_tibble()
+summary(Crab)
+Crab
+
+Crab$COLOR <- as.factor(Crab$COLOR)
+Crab
+Crab <- dummy_cols(Crab, select_columns = "COLOR", remove_first_dummy = TRUE)
+Crab
+```
+
+(A)	Fit a Poisson regression model to predict the number satellites for a female crab based on the predictor variables WIDTH (carapace width) and COLOR (female crab’s color (2 – 5)).
+(4 points)
+
+```{r}
+model1 <- glm(SATELLITES ~ WIDTH + COLOR_3 + COLOR_4 + COLOR_5, family = "poisson", data = Crab)
+summary(model1)
+model1
+```
+
+$\operatorname{logit}\left[ \widehat{\text{Satellites}}\left( Y=1 \right) \right]=-2.6500+0.1493\left( \text{Width} \right)-0.1997\left( \text{Color 3} \right)-0.4364\left( \text{Color 4} \right)-0.4474\left( \text{Color 5} \right)$
+
+
+(B)	Interpret the beta coefficient of WIDTH in the context of this problem. (5 points)
+
+The beta coefficient of width in the Poisson regression model is 0.1493, and represents the coefficient of width with respect to the log of satellites. Thus we can exponentiate both sides of the equation, giving us 
+
+$\widehat{\text{Satellites}}\left( Y=1 \right)=e^{-2.6500}*e^{0.1493\left( \text{Width} \right)}*e^{-0.1997\left( \text{Color 3} \right)}*e^{-0.4364\left( \text{Color 4} \right)}*e^{-0.4474\left( \text{Color 5} \right)}$
+
+or,
+
+$\widehat{\text{Satellites}}\left( Y=1 \right)=e^{-2.6500+0.1493\left( \text{Width} \right)-0.1997\left( \text{Color 3} \right)-0.4364\left( \text{Color 4} \right)-0.4474\left( \text{Color 5} \right)}$
+
+Thus for every 1 unit increase in carapace width, the number of satellites is increased by a factor of e^0.1493, or 1.161.
+
+(C)	Construct and interpret a 99% confidence interval for the beta coefficient of WIDTH in the context of this problem. (5 points)
+
+```{r}
+round(exp(coef(model1)), 4)
+
+round(exp(confint(model1, level = 0.99)), 4)
+
+confint(model1, "WIDTH", level = 0.99)
+
+exp(0.09536736)
+exp(0.20274487)
+```
+Since taking the natural exponent of each bound of the confidence interval returns the range [1.10, 1.22], which does not include 0, we can be 99% certain that the variable WIDTH has a positive correlation with the number of satellites a female horseshoe crab will have. This means that for every 1 unit increase in WIDTH, there we are 99% confident the number of satellites will increase by a factor lying between 1.10 and 1.22.
+
+(D)	Is WIDTH a useful predictor of satellites? Conduct an appropriate chi-square test. (8 points)
+
+null hypothesis: WIDTH is not a statistically significant predictor of the number of satellites a female horseshoe crab will have.
+
+```{r}
+summary(model1)
+```
+
+$\text{H}_{0}: \beta_{1} = 0$
+
+$\text{H}_{a}: \beta_{1} \ne 0$
+
+$\text{T.S.: } \chi^2 = 51.351556$
+
+$\text{p-value: } P(\chi^2 \ge 1.196) \approx 7.73*10^{-13}$
+
+We can get a chi-squared value of 7.166^2 from the summary of model1 = 51.351556, and the p-value is $7.73*10^{-13}$, which is very low. It is much lower than  all classical $\alpha$ values, such as 0.1, 0.05 and 0.01, we can reject the $\text{H}_{0}$. Thus we can confidently conclude that width is a statistically significant predictor of the number of satellites a female horseshoe crab will have at all reasonable confidence intervals.
+
+(E)	Does COLOR contribute to the prediction of satellites?  Conduct an appropriate chi-square test. (8 points)
+
+null hypothesis: COLOR is not a statistically significant predictor of the number of satellites a female horseshoe crab will have.
+
+
+```{r}
+model3 <- glm(SATELLITES ~ WIDTH, family = "poisson", data = Crab)
+summary(model3)
+model3
+
+anova(model3, model1, test = "Chisq")
+```
+
+$\text{H}_{0}: \beta_{1} = 0$
+
+$\text{H}_{a}: \beta_{1} \ne 0$
+
+$\text{T.S.: } \chi^2 = 8.5338$
+
+$\text{p-value: } P(\chi^2 \ge 1.196) \approx 0.03618$
+
+We can get a chi-squared value of 8.5338 from the Analysis of Variance teat, and a p-value of 0.03618, which is low. Since it is less than the classical $\alpha$ value of 0.05, we can reject the $\text{H}_{0}$ at the 95% confidence interval. Thus we can  conclude that color is a statistically significant predictor of the number of satellites a female horseshoe crab will have.
