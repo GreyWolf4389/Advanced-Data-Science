@@ -1,0 +1,171 @@
+---
+title: "Position Prediction"
+author: "Gao"
+date: "2024-03-05"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+Introduction
+
+The NHL is one of the most elite sports leagues in the world, and deals often hit 8 digit figures. Thus it is important for each team to put each player in the position they play best, which this paper aims to do. The positions players can play are as follows: center, defense and wing. The goalie position has been removed because it is fundamentally different from the rest of the positions, and the side distinction has been removed for wings since there is no theoretical difference between each wing. The dataset this model is built off of consists of every NHL recruit with adequate data from 2004 to 2021. The data has been trimmed down to only include the player's year recruited, their pick number, the team they were drafted by, their name, nationality, position (which we are trying to predict), age, games played, goals, assists, points, point differential, and total penalty minutes.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Libraries are imported
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(rpart.plot)
+library(caret)
+library(dplyr)
+```
+
+Datset is imported
+
+```{r}
+NHL <- read_csv("nhldraft.csv")
+```
+
+\newpage
+
+Convert the Position column from the character type to the factor type. This is necessary because the dependent variable in a classification model must be of the factor type.
+
+```{r}
+NHL$Position <- as.factor(NHL$Position)
+```
+
+Split the data into testing and training sets using a 75-25 split
+
+```{r}
+NHL_split <- initial_split(NHL, prop = 0.75)
+
+train <- training(NHL_split)
+
+test <- testing(NHL_split)
+```
+
+Create a decision tree model with a depth of 30 and a minimum of 1 data points per node
+
+```{r}
+dtree_mod <- decision_tree(mode = "classification", min_n = 1, tree_depth = 30)
+```
+
+Fit the model to predict the Position variable given all of the relevant remaining variables in the data set.
+
+```{r}
+dtree_mod_fit <- fit(object = dtree_mod, formula = Position ~ Age + Goals + Assists + Points + PlusMinus + PenaltyMinutes + GamesPlayed, data = train)
+```
+
+\newpage
+
+Plot the model.
+
+```{r}
+rpart.plot(extract_fit_engine(dtree_mod_fit))
+```
+
+\newpage
+
+Create the predictions for the model using the test data.
+
+```{r}
+predictions <- predict(dtree_mod_fit, new_data = test) 
+
+predictions
+```
+
+\newpage
+
+View the confusion matrix for the model as well as the accuracy and kappa metrics. Note that the kappa metric is extremely low, indicating that this model is not very accurate. This makes sense as it will likely be very difficult to predict the postion a player plays from their statistics alone. This is especially true with the offensive positions, as at the level of the NHL they will all have similar opportunities to score. For example, Howe and Jagr played/play wing, Gretzky and Messier played center. These 4 players are the top 4 point leaders in the NHL. Defensemen should have lower goals/assists than the offensive poisions, which is reflected by the decision tree's choice of assigning players with lower goal counts to defense.
+
+```{r}
+confusionMatrix(data = predictions$.pred_class, reference = test$Position)
+```
+
+\newpage
+
+Check the variable importance of the model. Make a note of any variables that have an importance of 0.
+
+As we can see Age is the only variable that has an importance of 0
+
+```{r}
+dtree_mod_fit %>% extract_fit_engine() %>% varImp()
+```
+
+Create six cross validation folds for the training data
+
+```{r}
+folds <- vfold_cv(train, v = 6)
+```
+
+Create an automatic grid of hyperparameters for the model
+
+```{r}
+tree_grid_auto <- grid_regular(tree_depth(), min_n(), cost_complexity())
+
+tree_grid_auto
+```
+
+\newpage
+
+```{r}
+print(tree_grid_auto, n = 27)
+```
+
+\newpage
+
+Use the grid and the folds to tune the model
+
+```{r}
+dtree_mod_tune <- decision_tree(mode = "classification", tree_depth = tune(), min_n = tune(), cost_complexity = tune())
+
+tuning_data <- tune_grid(dtree_mod_tune, preprocessor = Position ~ Goals + Assists + Points + PlusMinus + PenaltyMinutes + GamesPlayed, resamples = folds, grid = tree_grid_auto)
+
+print(tuning_data %>% collect_metrics, n = 54)
+```
+
+\newpage
+
+Display the best hyperparameter values for the model
+
+The best hyperparameter values are min_n = 40, and tree_depth = 8
+
+```{r}
+tuning_data %>% select_best(metric = "accuracy")
+
+tuning_data %>% show_best(metric = "accuracy")
+```
+
+Create the final model that uses the best hyperparameter values.
+
+```{r}
+dtree_mod_final <- decision_tree(mode = "classification", min_n = 21, tree_depth = 8)
+```
+
+Fit the final model without using any variables that have an importance of 0.
+
+```{r}
+dtree_mod_fit_final <- fit(object = dtree_mod, formula = Position ~ Goals + Assists + Points + PlusMinus + PenaltyMinutes + GamesPlayed, data = train)
+```
+
+Use the final mode to create predictions.
+
+```{r}
+predictions_final <- predict(dtree_mod_fit_final, new_data = test) 
+
+predictions_final
+```
+
+View the confusion matrix for the final model. Note that the kappa value has not changed, and that the predictions are the same as before. This is likely because there are so many different players with statistics ranging across so many games that it becomes difficult to pinpoint a player's position. A better way to approach this problem would be to normalize all values, points, plusminus, penalty minutes, etc. across all games by dividing each value by the number of games played. This will allow for offense and defense to better distinbguish from each other, as well as preventing players that played large numbers of games from skewing the data.
+
+```{r}
+confusionMatrix(data = predictions_final$.pred_class, reference = test$Position)
+```
+

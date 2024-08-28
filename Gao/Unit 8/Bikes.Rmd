@@ -1,0 +1,352 @@
+---
+title: "E-Bikes"
+author: "Gao"
+date: "2024-04-10"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(rpart.plot)
+library(caret)
+library(dplyr)
+library(ggforce)
+library(mctest)
+library(olsrr)
+library(jtools)
+library(ggcorrplot)
+library(yardstick)
+library(car)
+library(moments)
+library(GGally)
+library(psych)
+library(fastDummies)
+library(forecast)
+```
+
+```{r}
+ebikes <- read.csv("b.csv")
+ebikes
+```
+
+```{r}
+modelLin <- lm(USLin ~ USAge + USCar + USGas + PrivateMiles + PublicMiles, data = ebikes)
+modelLin
+summary(modelLin)
+
+model1 <- lm(US ~ USAge + USCar + USGas + PrivateMiles + PublicMiles, data = ebikes)
+model1
+summary(model1)
+```
+
+```{r}
+standard_error <- sqrt(deviance(modelLin)/df.residual(modelLin))
+standard_error
+2*standard_error
+plot(fitted(modelLin),resid(modelLin))
+abline(h=2*standard_error, col = "blue")
+abline(h=-2*standard_error, col = "blue")
+abline(h=3*standard_error, col = "red")
+abline(h=-3*standard_error, col = "red")
+```
+
+
+```{r}
+t <- qt(df =  16 - 5 - 2, 0.95)
+t
+
+jackknife <- rstudent(modelLin)
+sort(round(jackknife, 4))
+```
+
+```{r}
+cookCV <- 4/16
+cookCV
+
+cook <- cooks.distance(modelLin)
+sort(round(cook, 4))
+```
+
+```{r}
+qqnorm(resid(modelLin))
+qqline(resid(modelLin), col = "red", lwd = 2)
+
+qqPlot(resid(modelLin))
+
+skewness(jackknife)
+kurtosis(jackknife)
+
+ols_vif_tol(modelLin)
+
+eigprop(modelLin)
+
+ols_step_all_possible(modelLin)
+
+ols_step_forward_p(modelLin)
+ols_step_backward_p(modelLin)
+ols_step_both_p(modelLin)
+
+ols_step_best_subset(modelLin)
+```
+
+```{r}
+standard_error <- sqrt(deviance(model1)/df.residual(model1))
+standard_error
+2*standard_error
+plot(fitted(model1),resid(model1))
+abline(h=2*standard_error, col = "blue")
+abline(h=-2*standard_error, col = "blue")
+abline(h=3*standard_error, col = "red")
+abline(h=-3*standard_error, col = "red")
+```
+
+
+```{r}
+t <- qt(df =  16 - 5 - 2, 0.95)
+t
+
+jackknife <- rstudent(model1)
+sort(round(jackknife, 4))
+```
+
+```{r}
+cookCV <- 4/16
+cookCV
+
+cook <- cooks.distance(model1)
+sort(round(cook, 4))
+```
+
+```{r}
+qqnorm(resid(model1))
+qqline(resid(model1), col = "red", lwd = 2)
+
+qqPlot(resid(model1))
+
+skewness(jackknife)
+kurtosis(jackknife)
+
+ols_vif_tol(model1)
+
+eigprop(model1)
+
+ols_step_all_possible(model1)
+
+ols_step_forward_p(model1)
+ols_step_backward_p(model1)
+ols_step_both_p(model1)
+
+ols_step_best_subset(model1)
+```
+```{r}
+model2 <- lm(US ~ USAge + USGas + PrivateMiles + PublicMiles, data = ebikes)
+model2
+summary(model2)
+```
+
+
+```{r}
+standard_error <- sqrt(deviance(model2)/df.residual(model2))
+standard_error
+2*standard_error
+plot(fitted(model2),resid(model2))
+abline(h=2*standard_error, col = "blue")
+abline(h=-2*standard_error, col = "blue")
+abline(h=3*standard_error, col = "red")
+abline(h=-3*standard_error, col = "red")
+```
+
+
+```{r}
+t <- qt(df =  16 - 4 - 2, 0.95)
+t
+
+jackknife <- rstudent(model2)
+sort(round(jackknife, 4))
+```
+
+```{r}
+cookCV <- 4/16
+cookCV
+
+cook <- cooks.distance(model2)
+sort(round(cook, 4))
+```
+
+```{r}
+qqnorm(resid(model2))
+qqline(resid(model2), col = "red", lwd = 2)
+
+qqPlot(resid(model2))
+
+jackknife <- rstudent(model2)
+sort(round(jackknife, 4))
+
+skewness(jackknife)
+kurtosis(jackknife)
+
+ols_vif_tol(model2)
+
+eigprop(model2)
+
+ols_step_all_possible(model2)
+
+ols_step_forward_p(model2)
+ols_step_backward_p(model2)
+ols_step_both_p(model2)
+
+ols_step_best_subset(model2)
+```
+
+
+```{r}
+dataage <- data.frame(
+  Year = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021),
+  USAge = c(37.4, 37.6, 37.7, 37.8, 37.9, 38.0, 38.2, 38.4, 38.6, 38.8)
+)
+
+dfage <- ts(dataage$USAge, start = min(dataage$Year), end = max(dataage$Year), frequency = 1)
+
+plot(dfage)
+
+model <- auto.arima(dfage, stepwise = FALSE, ic = "aic")
+
+
+fit <- auto.arima(dfage)
+
+summary(fit)
+
+forecast <- forecast(fit, h = 10) 
+
+print(forecast)
+```
+
+```{r}
+dataCar <- data.frame(
+  Year = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021),
+  UScar = c(21819, 21751, 21640, 21365, 20815, 20004, 20077, 20278, 20935, 26500)
+)
+
+dfcar <- ts(dataCar$UScar, start = min(dataCar$Year), end = max(dataCar$Year), frequency = 1)
+
+plot(dfcar)
+
+model <- auto.arima(dfcar, stepwise = FALSE, ic = "aic")
+
+fitcar <- auto.arima(dfcar)
+
+summary(fitcar)
+
+forecast <- forecast(fitcar, h = 10) 
+
+print(forecast)
+
+plot(forecast(auto.arima(ts(dfcar,frequency=2),D=1),h=10))
+
+print(forecast(auto.arima(ts(dfcar,frequency=2),D=1),h=10))
+```
+
+```{r}
+datagas <- data.frame(
+  Year = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021),
+  USgas = c(3.62, 3.51, 3.36, 2.43, 2.14, 2.42, 2.72, 2.60, 2.17, 3.01)
+)
+
+dfgas <- ts(datagas$USgas, start = min(datagas$Year), end = max(datagas$Year), frequency = 1)
+
+plot(dfgas)
+
+model <- auto.arima(dfgas, stepwise = FALSE, ic = "aic")
+
+fitgas <- auto.arima(dfgas)
+
+summary(fitgas)
+
+forecast <- forecast(fitgas, h = 10) 
+
+print(forecast)
+
+plot(forecast(fitgas, h = 10))
+```
+
+```{r}
+datapriv <- data.frame(
+  Year = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021),
+  USpriv = c(5046, 5083, 5158, 5283, 5412, 5482, 5546, 5579, 5336)
+)
+
+dfgas <- ts(datapriv$USpriv, start = min(datapriv$Year), end = max(datapriv$Year), frequency = 1)
+
+plot(dfgas)
+
+model <- auto.arima(dfgas, stepwise = FALSE, ic = "aic")
+
+fitgas <- auto.arima(dfgas)
+
+summary(fitgas)
+
+forecast <- forecast(fitgas, h = 10) 
+
+print(forecast)
+
+plot(forecast(fitgas, h = 10))
+
+```
+
+
+```{r}
+datapriv <- data.frame(
+  Year = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021),
+  USpriv = c(55.17, 56.47, 57.01, 55.7, 56.32, 54.83, 53.83, 54.1, 31.55, 22.37)
+)
+
+dfgas <- ts(datapriv$USpriv, start = min(datapriv$Year), end = max(datapriv$Year), frequency = 1)
+
+plot(dfgas)
+
+model <- auto.arima(dfgas, stepwise = FALSE, ic = "aic")
+
+fitgas <- auto.arima(dfgas)
+
+summary(fitgas)
+
+forecast <- forecast(fitgas, h = 10) 
+
+print(forecast)
+
+plot(forecast(fitgas, h = 10))
+```
+
+
+```{r}
+predictors <- read.csv("predict.csv")
+predictors
+
+predict(model1, predictors)
+
+predict(modelLin, predictors)
+
+predict(model2, predictors)
+
+5.76*(14.85921 ^ 2) 
+5.76*(16.62025 ^ 2) 
+```
+Model 1 predictions:
+
+856.8813 in 2025
+852.3085 in 2028
+
+Linearized Model
+
+1271.786 in 2025
+1591.1 in 2028
+
+Model 2 predictions:
+
+739.7401 in 2025
+710.0900 in 2028

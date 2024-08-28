@@ -132,5 +132,60 @@ predictions_hyper <- predict(dtree_mod_hyper_fit, new_data = test)
 confusionMatrix(data = predictions_hyper$.pred_class, reference = test$Species)
 ```
 
+```{r}
+folds <- vfold_cv(train, v =5 )
 
+folds
+```
+
+```{r}
+dtree_mod <- decision_tree(mode = "classification")
+
+tuned <- tune_grid(dtree_mod, preprocessor = Species ~., resamples = folds)
+
+tuned
+```
+
+```{r}
+tuned$.metrics
+
+collect_metrics(tuned)
+```
+
+```{r}
+tunable(dtree_mod)
+
+dtree_mod_tune <- decision_tree(mode = "classification", tree_depth = tune(), min_n = tune(), cost_complexity = tune())
+
+tree_grid_auto <- grid_regular(tree_depth(), min_n(), cost_complexity())
+
+tree_grid_auto
+
+print(tree_grid_auto, n = 27)
+```
+
+```{r}
+tree_grid_manual <- expand.grid(tree_depth = 2:5, min_n = seq(1,51,10), cost_complexity = c(0, 0.1, 0.2, 0.3)) %>% as_tibble()
+
+tree_grid_manual
+
+print(tree_grid_manual, n = 2967) 
+
+tree_grid_regular_fixed <- grid_regular(tree_depth(), min_n(), levels = 3)
+
+tree_grid_regular_fixed
+
+```
+
+```{r}
+tuning_data <- tune_grid(dtree_mod_tune, preprocessor = Species ~., resamples = folds, grid = tree_grid_auto)
+
+tuning_data
+
+print(tuning_data %>% collect_metrics, n = 54)
+
+tuning_data %>% select_best(metric = "accuracy")
+
+tuning_data %>% show_best(metric = "accuracy")
+```
 

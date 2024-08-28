@@ -1,0 +1,235 @@
+---
+title: "College"
+author: "Gao"
+date: "2024-04-17"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(rpart.plot)
+library(caret)
+library(dplyr)
+library(maps)
+library(ggplot2)
+library(ggrepel)
+```
+
+I'm being honest right now, I genuinely have not a clue what I am doing with this. But here we go! Special thanks to my man Lucas Qu and Varun Alluri for helping me figure out how to do the funky graphs and everything. Data is sourced for 25 colleges directly from the Google.com information bubble and edurank.com. Also thanks to ChatGPT for rescuing me when the graphs suddenly stopped working.
+
+The data collected are as follows:
+Acceptance Rate - Undergraduate acceptance rate 
+Average SAT - Average SAT composite score
+Average ACT - Average ACT composite score
+Cost - Total of undergraduate tuition, living expenses, etc.
+Aid Receiving - Portion of students receiving financial aid
+Undergraduate population - Number of undergraduate students
+Graduate population - Number of graduate students
+Percent Asian - Percentage of students that are asian
+Graduation rate - 4-year undergraduate graduation rate
+Publications - Number of publications attributed to the institution
+Citations - Number of citations of publications attributed to the institution
+Total staff - Total staff, including professors, administrators, etc.
+Private/Public - If a school is public or private
+Latitude - Latitude coordinate of the college
+Longitude - Longitude coordinate of the college
+
+
+```{r}
+college <- read.csv("MC.csv") %>% as_tibble()
+college
+```
+
+Histogram of colleges by ACT and SAT scores. Guess which ones are MIT and Harvard.
+
+
+```{r}
+hist(college$Average.SAT, breaks = 5, main = "Average SAT Scores", xlab = "Average SAT")
+hist(college$Average.ACT, breaks = 5, main = "Average ACT Scores", xlab = "Average ACT")
+```
+
+
+Geographical map of the 25 colleges, labeled, and color coded for private/public
+
+
+```{r}
+ggplot(map_data("state", "massachusetts"), aes(x = long, y = lat)) +
+    scale_color_manual(values = c("Private" = "#750014", "Public" = "#ff1423"),
+                       labels = c("Private" = "Private", "Public" = "Public"),
+                       name = "Type") +
+    geom_polygon(fill = "white", color = "black") +
+    geom_point(data = college,
+               aes(x = Longitude, y = Latitude, color = ifelse(Private == 1, "Private", "Public"))) +
+    coord_quickmap() +
+    labs(title = "Colleges in MA", x = "Latitude", y = "Longitude") +
+    geom_text_repel(data = college,
+                    aes(x = Longitude, y = Latitude, label = College, color = "#ff1423"),
+                    size = 2, max.overlaps = 10000, box.padding = 1) 
+
+```
+
+Geographical map of the 25 colleges, with the size of each dot proportional to the total student population and color equal to the average ACT of the school.
+
+
+```{r}
+ggplot(map_data("state", "massachusetts"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "black") +
+    geom_point(data = college,
+               aes(x = Longitude, y = Latitude, size = Undergraduates + Graduates, color = Average.ACT),
+               alpha = 0.5) +  
+    coord_quickmap() +
+    labs(title = "Population of colleges in MA", x = "Longitude", y = "Latitude") +
+    scale_size(range = c(0.2, 8)) +  
+    guides(alpha = FALSE)
+```
+
+
+Just an easier view, bigger circle = higher ACT
+
+
+```{r}
+ggplot(map_data("state", "massachusetts"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "black") +
+    geom_point(data = college,
+               aes(x = Longitude, y = Latitude, size = Average.ACT),
+               alpha = 0.25) +  
+    coord_quickmap() +
+    labs(title = "Population of colleges in MA", x = "Longitude", y = "Latitude") +
+    scale_size(range = c(1, 10)) +  
+    guides(alpha = FALSE)
+```
+
+Wow! Private schools are expensive!!!
+
+
+```{r}
+
+ggplot(college, aes(x = "Private","Public", y = Cost, fill = factor(Private))) + 
+    geom_boxplot(alpha = 0.4) + 
+    xlab("School Type") +
+    labs(title = "Tuition at Public vs. Private Universities", x = "School Type", y = "Tuition") +
+    scale_fill_manual(values = c("#750014", "#ff1423"), labels = c("Public", "Private"))
+
+
+#Special thanks to Lucas for giving me the inspiration to do this!
+print("Private Schools: ")
+summary(college$Cost[college$Private == 1])
+print("Public Schools: ")
+summary(college$Cost[college$Private == 0])
+```
+
+Comparison of asian population sizes between private and public universitites. Much bigger range for publics, due to Hampshire on the low end, and Wellsley and MIT on the upper end.
+
+```{r}
+ggplot(college, aes(x = "Private","Public", y = Asian, fill = factor(Private))) + 
+    geom_boxplot(alpha = 0.4) + 
+    xlab("School Type") +
+    labs(title = "Asians at Public vs. Private Universities", x = "School Type", y = "Asians") +
+    scale_fill_manual(values = c("#750014", "#ff1423"), labels = c("Public", "Private"))
+```
+
+Graduation Rate of publics vs. privates. Likely higher at privates because they cost more, and thus the sunk cost fallacy kicks in.
+
+```{r}
+ggplot(college, aes(x = "Private","Public", y = Graduation.Rate, fill = factor(Private))) + 
+    geom_boxplot(alpha = 0.4) + 
+    xlab("School Type") +
+    labs(title = "Graduation Rate at Public vs. Private Universities", x = "School Type", y = "Graduation Rate") +
+    scale_fill_manual(values = c("#750014", "#ff1423"), labels = c("Public", "Private"))
+```
+
+Publics give really good aid. Shocking. Whatis surprising is Hampshire University, which gives aid for all students, thus giving the Privates a much greater range.
+
+```{r}
+ggplot(college, aes(x = "Private","Public", y = Aid.Receiving, fill = factor(Private))) + 
+    geom_boxplot(alpha = 0.4) + 
+    xlab("School Type") +
+    labs(title = "Aid Receiving at Public vs. Private Universities", x = "School Type", y = "Aid Receiving") +
+    scale_fill_manual(values = c("#750014", "#ff1423"), labels = c("Public", "Private"))
+```
+
+Publics are much larger on average, and thus will have more publications. Can you guess what the four outliers are? (It's Harvard, MIT and BU for the privates, and UMass Amherst for the publics)
+
+```{r}
+ggplot(college, aes(x = "Private","Public", y = Publications, fill = factor(Private))) + 
+    geom_boxplot(alpha = 0.4) + 
+    xlab("School Type") +
+    labs(title = "Publications at Public vs. Private Universities", x = "School Type", y = "Publications") +
+    scale_fill_manual(values = c("#750014", "#ff1423"), labels = c("Public", "Private"))
+```
+
+Same story as the last graph. Tufts is now also an outlier.
+
+```{r}
+ggplot(college, aes(x = "Private","Public", y = Citations, fill = factor(Private))) + 
+    geom_boxplot(alpha = 0.4) + 
+    xlab("School Type") +
+    labs(title = "Citations at Public vs. Private Universities", x = "School Type", y = "Citations") +
+    scale_fill_manual(values = c("#750014", "#ff1423"), labels = c("Public", "Private"))
+```
+
+
+Another Lucas inspired graph, but this time I did a little thingy to sort the colleges by undergraduate student body size, then faculty count, then faculty/student ratio and student/faculty ratio. Look at MIT! More faculty than total students! Wow!
+
+```{r}
+
+college$College <- factor(college$College, levels = college$College[order(college$Total.Staff)])
+
+ggplot(data = college, aes(x = College, y = Total.Staff)) + 
+    geom_bar(fill="#ff1423", alpha=0.8, stat = "identity") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(title = "Staff Size of Universities in MA", x = "Universities", y = "Staff Count")
+
+
+college$College <- factor(college$College, levels = college$College[order(college$Undergraduates)])
+
+ggplot(data = college, aes(x = College, y = Undergraduates)) + 
+    geom_bar(fill="#ff1423", alpha=0.8, stat = "identity") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(title = "Undergraduate Student Body Size of Universities in MA", x = "Universities", y = "Undergraduate Enrollment")
+
+
+college$SFR <- college$Total.Staff / (college$Undergraduates +  college$Graduates)
+college$College <- factor(college$College, levels = college$College[order(college$SFR)])
+
+ggplot(data = college, aes(x = College, y = SFR)) + 
+    geom_bar(fill="#ff1423", alpha=0.8, stat = "identity") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(title = "Faculty Student Ratio of Universities in MA", x = "Universities", y = "Faculty Student Ratio")
+
+college$SFR <- college$Total.Staff / (college$Undergraduates)
+college$College <- factor(college$College, levels = college$College[order(college$SFR)])
+
+ggplot(data = college, aes(x = College, y = SFR)) + 
+    geom_bar(fill="#ff1423", alpha=0.8, stat = "identity") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(title = "Faculty Student Ratio of Universities in MA, No Graduates", x = "Universities", y = "Faculty Student Ratio")
+
+college$SFR <- (college$Undergraduates + college$Graduates) / (college$Total.Staff)
+college$College <- factor(college$College, levels = college$College[order(college$SFR)])
+
+ggplot(data = college, aes(x = College, y = SFR)) + 
+    geom_bar(fill="#ff1423", alpha=0.8, stat = "identity") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(title = "Student Faculty Ratio of Universities in MA", x = "Universities", y = "Student Faculty Ratio")
+
+college$SFR <- college$Undergraduates / (college$Total.Staff)
+college$College <- factor(college$College, levels = college$College[order(college$SFR)])
+
+ggplot(data = college, aes(x = College, y = SFR)) + 
+    geom_bar(fill="#ff1423", alpha=0.8, stat = "identity") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(title = "Undergraduate Student Faculty Ratio of Universities in MA", x = "Universities", y = "Student Faculty Ratio")
+
+```
+
+
+So closing thoughts. Pretty cool. It's interesting to see all the colleges bunched around the Boston and Cambridge area. Also the statistics are fun to look at too because MIT and Harvard literally skew everything. MIT especially, since they literally have more faculty than students!

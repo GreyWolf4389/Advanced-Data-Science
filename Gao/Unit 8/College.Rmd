@@ -1,0 +1,144 @@
+---
+title: "Universities in Illinois"
+author: "Varun Alluri"
+date: "2024-03-27"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+# Introduction
+
+This document presents an analysis of colleges in Illinois over the recent years. 
+
+
+# The Data 
+
+This data comes from the website Edu.Rank. The dataset is 19 by 8.  
+
+
+# The Columns
+- `University` provides names of the university
+- `PublicPrivate` provides whether the school is private or public
+- `AVGSAT` identifies the average SAT for the school
+- `AVGACT` identifies the average ACT for the school
+- `NetPrice` identifies the net price for each respective university 
+- `AcceptanceRate` Acceptance rate for each university 
+- `Latitude` latitude of each university
+- `Longitude` Longitude of each university 
+
+
+
+
+
+
+# The Analysis
+```{r echo= FALSE, message=FALSE, warning=FALSE}
+library("tidyverse")
+library("maps")
+library("ggplot2")
+setwd("/Users/varunalluri/Documents/Murach_R/Data")
+college <- read_csv("College Data Set5.csv") %>% as_tibble()
+college
+```
+
+
+
+
+
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "yellow") +
+    geom_point(data = college,
+               aes(x = Longitude, y = Latitude, color = PublicPrivate)) +
+    scale_color_manual(values = c("Public" = "blue", "Private" = "red")) +
+    coord_quickmap()
+```
+
+Public and Private universities in Illinois. Private universities are in red and Public universities are in blue. 
+
+
+
+```{r echo = FALSE}
+hist(college$AVGSAT, breaks = 8)
+```
+
+The average SAT scores for Illinois colleges overall. The Mean is greater than the median and most of the data is on the left side of the graph. 
+
+
+
+```{r echo = FALSE}
+ggplot(college, aes(x = AVGSAT, y = PublicPrivate)) +
+    geom_boxplot(fill="green", alpha=0.2) +
+    xlab("SAT scores Public vs Private")
+```
+
+This is the boxplot of Public vs Private universities. The SAT scores for private universities are clearly significantly higher. 
+
+
+
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) + 
+  geom_polygon(fill = "white", color = "orange") + 
+  geom_point(data = college,
+             aes(x = Longitude, y = Latitude, alpha = AVGSAT, size = AVGSAT)) + 
+  coord_quickmap()
+```
+
+This is the map of SAT scores in Illinois. The SAT scores near the chicago area are very high compared to the rest of Illinois. 
+
+
+```{r echo = FALSE}
+hist(college$AVGACT, breaks = 8)
+```
+
+The average ACT scores for Illinois colleges overall. The Mean is greater than the median and most of the data is on the left side of the graph. 
+
+
+
+```{r echo = FALSE}
+ggplot(college, aes(x = AVGACT, y = PublicPrivate)) +
+    geom_boxplot(fill="red", alpha=0.2) +
+    xlab("ACT scores Public vs Private")
+```
+
+This is the boxplot of Public vs Private universities. The ACT scores for private universities are clearly significantly higher. 
+
+
+
+
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) + 
+  geom_polygon(fill = "white", color = "blue") + 
+  geom_point(data = college,
+             aes(x = Longitude, y = Latitude, alpha = AVGACT, size = AVGACT)) + 
+  coord_quickmap()
+```
+
+This is the map of ACT scores in Illinois. The ACT scores near the chicago area are very high compared to the rest of Illinois. 
+
+
+
+```{r echo = FALSE}
+ggplot(college, aes(x = NetPrice, y = PublicPrivate)) +
+    geom_boxplot(fill="yellow", alpha=0.2) +
+    xlab("Net Price in USD")
+```
+
+Boxplot of the Net Price in USD for Private vs Public universities. The Net Price is significantly higher for private universities. 
+
+
+
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) + 
+  geom_polygon(fill = "white", coloxr = "green") + 
+  geom_point(data = college,
+             aes(x = Longitude, y = Latitude, alpha = NetPrice, size = NetPrice)) + 
+  coord_quickmap()
+```
+
+Map of Net Prices for colleges in the State of Illinois. The Net price is higher near many colleges in the northeast part of the state compared to the southern part. 
+
+
+

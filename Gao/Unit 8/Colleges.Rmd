@@ -1,0 +1,308 @@
+---
+title: "Colleges in Illinois"
+author: "Varun Alluri"
+date: "2024-04-03"
+output:
+  slidy_presentation: default
+  beamer_presentation: default
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# The Analysis
+```{r echo= FALSE, message=FALSE, warning=FALSE}
+library("tidyverse")
+library("maps")
+library("ggplot2")
+setwd("/Users/varunalluri/Documents/Murach_R/Data")
+college <- read_csv("College Data Set5.csv") %>% as_tibble()
+college
+```
+
+
+
+# Public and Private Schools
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "yellow") +
+    geom_point(data = college,
+               aes(x = Longitude, y = Latitude, color = PublicPrivate)) +
+    scale_color_manual(values = c("Public" = "blue", "Private" = "red")) +
+    coord_quickmap()
+```
+
+Public and Private universities in Illinois. Private universities are in red and Public universities are in blue. 
+
+
+# Histogram for AVG SAT scores
+```{r echo = FALSE}
+hist(college$AVGSAT, breaks = 8)
+```
+
+The average SAT scores for Illinois colleges overall. The Mean is greater than the median and most of the data is on the left side of the graph. 
+
+
+# Boxplot of Private and Public Universities 
+```{r echo = FALSE}
+ggplot(college, aes(x = AVGSAT, y = PublicPrivate)) +
+    geom_boxplot(fill="green", alpha=0.2) +
+    xlab("SAT scores Public vs Private")
+```
+
+This is the boxplot of Public vs Private universities. The SAT scores for private universities are clearly significantly higher. 
+
+
+# Map of SAT scores 
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) + 
+  geom_polygon(fill = "white", color = "orange") + 
+  geom_point(data = college,
+             aes(x = Longitude, y = Latitude, alpha = AVGSAT, size = AVGSAT)) + 
+  coord_quickmap()
+```
+
+This is the map of SAT scores in Illinois. The SAT scores near the chicago area are very high compared to the rest of Illinois. 
+
+# SAT scores
+```{r echo = FALSE}
+hist(college$AVGACT, breaks = 8)
+```
+
+The average ACT scores for Illinois colleges overall. The Mean is greater than the median and most of the data is on the left side of the graph. 
+
+
+# Boxplot of Private vs Public Schools
+```{r echo = FALSE}
+ggplot(college, aes(x = AVGACT, y = PublicPrivate)) +
+    geom_boxplot(fill="red", alpha=0.2) +
+    xlab("ACT scores Public vs Private")
+```
+
+This is the boxplot of Public vs Private universities. The ACT scores for private universities are clearly significantly higher. 
+
+
+
+# Map of ACT scores
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) + 
+  geom_polygon(fill = "white", color = "blue") + 
+  geom_point(data = college,
+             aes(x = Longitude, y = Latitude, alpha = AVGACT, size = AVGACT)) + 
+  coord_quickmap()
+```
+
+This is the map of ACT scores in Illinois. The ACT scores near the chicago area are very high compared to the rest of Illinois. 
+
+
+# Boxplot of Net Price
+```{r echo = FALSE}
+ggplot(college, aes(x = NetPrice, y = PublicPrivate)) +
+    geom_boxplot(fill="yellow", alpha=0.2) +
+    xlab("Net Price in USD")
+```
+
+Boxplot of the Net Price in USD for Private vs Public universities. The Net Price is significantly higher for private universities. 
+
+
+# Net Prices for colleges in Illinois
+```{r echo = FALSE}
+ggplot(map_data("state", "illinois"), aes(x = long, y = lat)) + 
+  geom_polygon(fill = "white", color = "green") + 
+  geom_point(data = college,
+             aes(x = Longitude, y = Latitude, alpha = NetPrice, size = NetPrice)) + 
+  coord_quickmap()
+```
+
+Map of Net Prices for colleges in the State of Illinois. The Net price is higher near many colleges in the northeast part of the state compared to the southern part. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+title: "Analysis of Colleges in Pennsylvania"
+author: "Lucas Qu"
+date: "`r Sys.Date()`"
+output:
+  slidy_presentation: default
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: spacelab
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+  ioslides_presentation:
+    css: styles.css
+---
+
+# Introduction
+
+This document presents an analysis of colleges in Pennsylvania in recent years. Using analysis, statistical differences between public and private universities can easily be seen.
+
+------------------------------------------------------------------------
+
+# The data
+
+The data for this analysis comes from recent Wikipedia articles, USNews, and EduRank. All the sources were compiled together in a spreadsheet. The data set contains 10 variables covering 21 public and private institutions in Pennsylvania.
+
+## The Variables
+
+**Tuition_Yearly** - The annual tuition of attending the school.
+**Cost_Per_Credit_Hour** - The cost of one credit hour at the school.
+**Undergraduate_Enrollment** - The total amount of undergraduate students on campus
+**StudentFaculty_Ratio** - The ratio of students per teacher at the campus.
+**Student_Retention_Rate** - The proportion of students that return for a second year of education after their first year.
+**Average_ACT_Score** - Average ACT scores.
+**Number_Of_Majors** - The number of different majors offered on campus.
+**School_Type** - Lists whether the school is public or private.
+**Latitude** - The latitude.
+**Longitude** - The longitude
+**Acreage** - The size of the campus in acres.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library("tidyverse")
+library("maps")
+library("ggplot2")
+library("ggrepel")
+setwd("/Users/lucasqu/Documents/murach_r/data")
+collegeData <- read.csv("CollegeDataPennsylvania.csv")
+```
+
+# .
+```{r echo=FALSE}
+ggplot(map_data("state", "pennsylvania"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "black") +
+    geom_point(data = collegeData,
+               aes(x = Longitude, y = Latitude)) +
+    coord_quickmap() +
+    geom_text_repel(data = collegeData,
+                    aes(x = Longitude, y = Latitude, label = University_Names),
+                    size = 2, max.overlaps = Inf, box.padding = 0.5) +
+    labs(title = "A Collection of Universities in Pennsylvania", x = "Longitude", y = "Latitude")
+```
+
+This graph utilizes the geom_text_repel() function to create labels for each of the 21 universities that I looked at in this analysis. More information regarding them will be shown.
+
+# .
+```{r echo=FALSE}
+ggplot(map_data("state", "pennsylvania"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "black") +
+    geom_point(data = collegeData,
+               aes(x = Longitude, y = Latitude, color = School_Type)) +
+    scale_color_manual(values = c("Public" = "#34c9eb", "Private" = "#eb346b")) +
+    coord_quickmap() +
+    labs(title = "Public and Private Universities in Pennsylvania", x = "Longitude", y = "Latitude")
+```
+
+Private schools are listed in pink, public schools are listed in blue. It appears for the most part, private schools are centered around the cities (Philadelphia and Pittsburgh). The public schools are mostly rural and spread evenly throughout the state.
+
+# .
+```{r echo=FALSE}
+ggplot(map_data("state", "pennsylvania"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "black") +
+    geom_point(data = collegeData, size = 1.8,
+               aes(x = Longitude, y = Latitude, alpha = Acreage)) +
+    coord_quickmap() +
+    labs(title = "Acreage Comparison of Universities in Pennsylvania", x = "Longitude", y = "Latitude")
+```
+
+This graph shows how large various university campuses are in Pennsylvania. The darker shaded points are larger. It's pretty obvious that Penn State has the largest campus on this map by a landslide.
+
+# .
+```{r echo=FALSE}
+ggplot(map_data("state", "pennsylvania"), aes(x = long, y = lat)) +
+    geom_polygon(fill = "white", color = "black") +
+    geom_point(data = collegeData,
+               aes(x = Longitude, y = Latitude, size = Undergraduate_Enrollment)) +
+    coord_quickmap() +
+    labs(title = "Population Comparison of Universities in Pennsylvania", x = "Longitude", y = "Latitude")
+```
+
+This graph shows the undergraduate enrollments of various universities in Pennsylvania. Once again, Penn State is the largest college in terms of undergraduates.
+
+# .
+```{r echo=FALSE}
+ggplot(collegeData, aes(x = Tuition_Yearly, y = School_Type)) + 
+    geom_boxplot(fill="slateblue", alpha=0.2) + 
+    xlab("Tuition in USD") +
+    labs(title = "Comparison of Tuition at Public and Private Universities in Pennsylvania", x = "Tuition ($USD)", y = "School Type")
+```
+
+```{r echo=FALSE}
+print("Public School Summary: ")
+summary(collegeData$Tuition_Yearly[collegeData$School_Type == "Public"])
+print("Private School Summary: ")
+summary(collegeData$Tuition_Yearly[collegeData$School_Type == "Private"])
+```
+
+The range of public school tuition is way below private school tuition. This is evident within the summary listed above. Financially affordable schools tend to not be public.
+
+# .
+```{r echo=FALSE}
+ggplot(data = collegeData, aes(x = University_Names, y = Undergraduate_Enrollment)) + 
+    geom_bar(fill="slateblue", alpha=0.6, stat = "identity") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(title = "Undergraduate Populations of Various Universities in Pennsylvania", x = "University Names", y = "Undergraduate Enrollment")
+```
+
+I thought this graph was aesthetically pleasing so I included it. Penn State and Temple had the largest student populations.
+
+# .
+```{r echo=FALSE}
+ggplot(collegeData, aes(x = Average_ACT_Score, y = School_Type)) + 
+    geom_boxplot(fill="slateblue", alpha=0.2) + 
+    xlab("Average ACT Score") +
+    labs(title = "Comparison of ACT Scores at Public and Private Universities in Pennsylvania", x = "ACT Score", y = "School Type")
+```
+
+```{r echo=FALSE}
+print("Public School Summary: ")
+summary(collegeData$Average_ACT_Score[collegeData$School_Type == "Public"])
+print("Private School Summary: ")
+summary(collegeData$Average_ACT_Score[collegeData$School_Type == "Private"])
+```
+
+Private schools tend to have higher ACT scores. Whether this is due to competitive admissions or selectivity is unknown. There could be several possible reasons for this (addressed in conclusion).
+
+# .
+```{r echo=FALSE}
+ggplot(collegeData, aes(x = StudentFaculty_Ratio, y = School_Type)) + 
+    geom_boxplot(fill="slateblue", alpha=0.2) + 
+    xlab("Student Faculty Ratio") +
+    labs(title = "Comparison of Student Faculty Ratios at Public and Private Universities in Pennsylvania", x = "Student Faculty Ratio", y = "School Type")
+```
+
+```{r echo=FALSE}
+print("Public School Summary: ")
+summary(collegeData$Average_ACT_Score[collegeData$School_Type == "Public"])
+print("Private School Summary: ")
+summary(collegeData$Average_ACT_Score[collegeData$School_Type == "Private"])
+```
+
+Private schools tend to have much lower student-faculty ratios. If a student wants a smaller class size and a more interactive lecture setting, a private school may be the way to go.
+
+# Concluding Words
+
+Overall, while it may seem that private schools are better in nearly all appealing aspects of admissions, that may be misleading. While some resources may be better, this comes at a hefty cost, potentially 3-10 times the amount that someone will pay for a public school.
+
+While private schools on average have higher ACT scores, lower student faculty ratios, etc, there are still great public schools that are similar.

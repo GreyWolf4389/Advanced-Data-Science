@@ -1,0 +1,34 @@
+---
+title: "ACC"
+author: "Gao"
+date: "2024-03-13"
+output: html_document
+---
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup, include=FALSE}
+library(tidymodels)
+library(tidyverse)
+library(rpart.plot)
+library(caret)
+library(dplyr)
+```
+
+```{r}
+ACC <- read.csv("ACC.csv")
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
