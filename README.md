@@ -1,4 +1,3 @@
 # Advanced-Data-Science
-This repo serves as an archive of code from Advanced Data Science.
 
-Do not plagarize.
+code and stuff from DS when we didn't know what we were doin lol
